@@ -1,0 +1,86 @@
+package io.jaamong.recordMCI.domain.entity;
+
+import io.jaamong.recordMCI.domain.dto.Activity;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ActivityEntity extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "daily_record_id")
+    private DailyRecordEntity dailyRecordEntity;
+
+    @Enumerated(EnumType.STRING)
+    private ActivityType activityType;  // "Walk", "Bible transcribe", "Coloring book"
+
+    private boolean completed = false;  // For the checkbox
+
+    // Optional fields - only populated when relevant
+    private Integer totalSteps;          // null for non-Walk activities
+    private Integer totalHours;          // null for non-Walk activities
+    private Integer totalMinutes;        // null for non-Walk activities
+
+    @Builder
+    public ActivityEntity(DailyRecordEntity dailyRecordEntity, ActivityType activityType, boolean completed, Integer totalSteps, Integer totalHours, Integer totalMinutes) {
+        this.dailyRecordEntity = dailyRecordEntity;
+        this.activityType = activityType;
+        this.completed = completed;
+        this.totalSteps = totalSteps;
+        this.totalHours = totalHours;
+        this.totalMinutes = totalMinutes;
+    }
+
+    public static ActivityEntity of(DailyRecordEntity dailyRecordEntity, ActivityType activityType) {
+        ActivityEntity activityEntity = builder()
+                .dailyRecordEntity(dailyRecordEntity)
+                .activityType(activityType)
+                .build();
+
+        if (activityType == ActivityType.WALK) {
+            activityEntity.totalSteps = 0;
+            activityEntity.totalHours = 0;
+            activityEntity.totalMinutes = 0;
+        }
+
+        return activityEntity;
+    }
+
+    @Override
+    public String toString() {
+        return "ActivityEntity{" +
+                "id=" + id +
+                ", dailyRecord.id=" + dailyRecordEntity.getId() +
+                ", activityType='" + activityType + '\'' +
+                ", completed=" + completed +
+                ", totalSteps=" + totalSteps +
+                ", totalHours=" + totalHours +
+                ", totalMinutes=" + totalMinutes +
+                '}';
+    }
+
+    public void mapDailyRecord(DailyRecordEntity dailyRecordEntity) {
+        this.dailyRecordEntity = dailyRecordEntity;
+    }
+
+    public Activity toModel() {
+        return Activity.builder()
+                .id(id)
+                .dailyRecordId(dailyRecordEntity.getId())
+                .activityType(activityType)
+                .completed(completed)
+                .totalSteps(totalSteps)
+                .totalHours(totalHours)
+                .totalMinutes(totalMinutes)
+                .build();
+    }
+}

@@ -1,5 +1,6 @@
-package io.jaamong.recordMCI.domain;
+package io.jaamong.recordMCI.domain.entity;
 
+import io.jaamong.recordMCI.domain.dto.Users;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Users {
+public class UserEntity {
 
     @Column(name = "users_id")
     @Id
@@ -20,16 +21,23 @@ public class Users {
     private String password;  // encryption store
 
     @Builder
-    public Users(String username, String password) {
+    public UserEntity(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
     @Override
     public String toString() {
-        return "Users{" +
+        return "UserEntity{" +
                 "username='" + username + '\'' +
                 ", id=" + id +
                 '}';
+    }
+
+    public Users toModel() {
+        return Users.builder()
+                .id(id)
+                .username(username)
+                .build();
     }
 }
