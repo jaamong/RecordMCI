@@ -55,6 +55,26 @@ public class ActivityEntity extends BaseEntity {
         return activityEntity;
     }
 
+    public Activity toModel() {
+        return Activity.builder()
+                .id(id)
+                .dailyRecordId(dailyRecordEntity.getId())
+                .activityType(activityType)
+                .completed(completed)
+                .totalSteps(totalSteps)
+                .totalHours(totalHours)
+                .totalMinutes(totalMinutes)
+                .build();
+    }
+
+    public void mapDailyRecord(DailyRecordEntity dailyRecordEntity) {
+        this.dailyRecordEntity = dailyRecordEntity;
+    }
+
+    public void invertCompleted() {
+        this.completed = !this.completed;
+    }
+
     @Override
     public String toString() {
         return "ActivityEntity{" +
@@ -66,21 +86,5 @@ public class ActivityEntity extends BaseEntity {
                 ", totalHours=" + totalHours +
                 ", totalMinutes=" + totalMinutes +
                 '}';
-    }
-
-    public void mapDailyRecord(DailyRecordEntity dailyRecordEntity) {
-        this.dailyRecordEntity = dailyRecordEntity;
-    }
-
-    public Activity toModel() {
-        return Activity.builder()
-                .id(id)
-                .dailyRecordId(dailyRecordEntity.getId())
-                .activityType(activityType)
-                .completed(completed)
-                .totalSteps(totalSteps)
-                .totalHours(totalHours)
-                .totalMinutes(totalMinutes)
-                .build();
     }
 }

@@ -1,5 +1,6 @@
 package io.jaamong.recordMCI.domain.application;
 
+import io.jaamong.recordMCI.domain.dto.Activity;
 import io.jaamong.recordMCI.domain.entity.ActivityEntity;
 import io.jaamong.recordMCI.domain.entity.ActivityType;
 import io.jaamong.recordMCI.domain.entity.DailyRecordEntity;
@@ -41,5 +42,12 @@ public class ActivityService {
         activities = activityRepository.saveAll(activities);
 
         return activities;
+    }
+
+    @Transactional
+    public Activity invertCompleted(Long id) {
+        ActivityEntity activityEntity = activityRepository.findById(id);
+        activityEntity.invertCompleted();
+        return activityEntity.toModel();
     }
 }

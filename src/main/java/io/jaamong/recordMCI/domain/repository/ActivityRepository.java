@@ -1,5 +1,7 @@
 package io.jaamong.recordMCI.domain.repository;
 
+import io.jaamong.recordMCI.api.exception.CustomRuntimeException;
+import io.jaamong.recordMCI.api.exception.ErrorCode;
 import io.jaamong.recordMCI.domain.entity.ActivityEntity;
 import io.jaamong.recordMCI.infrastructure.ActivityJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,5 +21,10 @@ public class ActivityRepository {
 
     public List<ActivityEntity> saveAll(List<ActivityEntity> activities) {
         return activityJpaRepository.saveAll(activities);
+    }
+
+    public ActivityEntity findById(Long id) {
+        return activityJpaRepository.findById(id)
+                .orElseThrow(() -> new CustomRuntimeException(ErrorCode.NOT_FOUND_ACTIVITY));
     }
 }
