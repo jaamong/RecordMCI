@@ -58,6 +58,10 @@ public class FoodEntity {
         this.dailyRecordEntity = dailyRecordEntity;
     }
 
+    public void invertConsumed() {
+        this.consumed = !this.consumed;
+    }
+
     public Food toModel() {
         return Food.builder()
                 .id(id)

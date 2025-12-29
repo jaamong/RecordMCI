@@ -1,5 +1,8 @@
 package io.jaamong.recordMCI.domain.repository;
 
+import io.jaamong.recordMCI.api.exception.CustomRuntimeException;
+import io.jaamong.recordMCI.api.exception.ErrorCode;
+import io.jaamong.recordMCI.domain.dto.Food;
 import io.jaamong.recordMCI.domain.entity.FoodEntity;
 import io.jaamong.recordMCI.infrastructure.FoodJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,5 +18,14 @@ public class FoodRepository {
 
     public List<FoodEntity> saveAll(List<FoodEntity> foodEntities) {
         return foodJpaRepository.saveAll(foodEntities);
+    }
+
+    public Food getById(Long id) {
+        return findById(id).toModel();
+    }
+
+    public FoodEntity findById(Long id) {
+        return foodJpaRepository.findById(id)
+                .orElseThrow(() -> new CustomRuntimeException(ErrorCode.NOT_FOUND_FOOD));
     }
 }

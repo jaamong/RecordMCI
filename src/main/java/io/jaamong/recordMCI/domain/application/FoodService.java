@@ -1,5 +1,6 @@
 package io.jaamong.recordMCI.domain.application;
 
+import io.jaamong.recordMCI.domain.dto.Food;
 import io.jaamong.recordMCI.domain.entity.DailyRecordEntity;
 import io.jaamong.recordMCI.domain.entity.FoodEntity;
 import io.jaamong.recordMCI.domain.entity.NutrientType;
@@ -47,5 +48,12 @@ public class FoodService {
         foodEntities = foodRepository.saveAll(foodEntities);
 
         return foodEntities;
+    }
+
+    @Transactional
+    public Food invertConsumed(Long id) {
+        FoodEntity foodEntity = foodRepository.findById(id);
+        foodEntity.invertConsumed();
+        return foodEntity.toModel();
     }
 }
