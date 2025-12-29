@@ -1,4 +1,4 @@
-package io.jaamong.recordMCI.domain;
+package io.jaamong.recordMCI.domain.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
