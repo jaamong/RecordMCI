@@ -10,7 +10,8 @@ public enum ErrorCode {
 
     // 4xx
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
-    NOT_FOUND_FOOD(HttpStatus.NOT_FOUND, "식품(FoodEntity)을 찾을 수 없습니다.");
+    NOT_FOUND_FOOD(HttpStatus.NOT_FOUND, "식품(FoodEntity)을 찾을 수 없습니다."),
+    NOT_FOUND_ACTIVITY(HttpStatus.NOT_FOUND, "활동(ActivityEntity)를 찾을 수 없습니다.");
 
     private final HttpStatus status;
     private final String message;
