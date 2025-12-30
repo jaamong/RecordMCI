@@ -3,14 +3,18 @@ package io.jaamong.recordMCI.domain.application;
 import io.jaamong.recordMCI.api.dto.response.DailyRecordGetOneResponse;
 import io.jaamong.recordMCI.domain.dto.Activity;
 import io.jaamong.recordMCI.domain.dto.Food;
-import io.jaamong.recordMCI.domain.entity.ActivityType;
-import io.jaamong.recordMCI.domain.entity.UserEntity;
+import io.jaamong.recordMCI.domain.entity.*;
+import io.jaamong.recordMCI.domain.repository.DailyRecordRepository;
+import io.jaamong.recordMCI.infrastructure.ActivityJpaRepository;
+import io.jaamong.recordMCI.infrastructure.FoodJpaRepository;
 import io.jaamong.recordMCI.infrastructure.UsersJpaRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,6 +27,15 @@ class DailyRecordServiceTest {
 
     @Autowired
     UsersJpaRepository usersJpaRepository;
+
+    @Autowired
+    DailyRecordRepository dailyRecordRepository;
+
+    @Autowired
+    ActivityJpaRepository activityJpaRepository;
+
+    @Autowired
+    FoodJpaRepository foodJpaRepository;
 
 //    @AfterEach
 //    void tearDown() {
@@ -58,9 +71,43 @@ class DailyRecordServiceTest {
                 );
     }
 
+    @DisplayName("특정 날짜의 DailyRecord를 상세 조회할 수 있다.")
+    @Test
+    void getDayBy() {
+        // given
+        LocalDate targetDate = LocalDate.now().plusDays(1);
+        UserEntity user = createUser();
+        createDailyRecord(targetDate, user);
+
+        // when
+        DailyRecordGetOneResponse response = dailyRecordService.getDayBy(user.getId(), targetDate);
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.foods()).hasSize(1);
+        assertThat(response.activities()).hasSize(1);
+    }
+
     private UserEntity createUser() {
         UserEntity user = new UserEntity("test1", "password1");
         return usersJpaRepository.save(user);
+    }
+
+    private void createDailyRecord(LocalDate targetDate, UserEntity user) {
+        DailyRecordEntity dailyRecordEntity = DailyRecordEntity.builder()
+                .date(targetDate)
+                .userEntity(user)
+                .build();
+
+        dailyRecordRepository.save(dailyRecordEntity);
+
+        ActivityEntity activityEntity = ActivityEntity.of(dailyRecordEntity, ActivityType.WALK);
+        activityEntity = activityJpaRepository.save(activityEntity);
+        dailyRecordEntity.addActivity(activityEntity);
+
+        FoodEntity foodEntity = FoodEntity.of(dailyRecordEntity, NutrientType.PROTEIN, "test");
+        foodEntity = foodJpaRepository.save(foodEntity);
+        dailyRecordEntity.addFood(foodEntity);
     }
 
 }
