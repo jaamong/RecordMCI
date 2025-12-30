@@ -10,6 +10,7 @@ public class CustomRuntimeException extends RuntimeException {
     protected ErrorCode errorCode;
 
     public CustomRuntimeException(ErrorCode errorCode) {
+        super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
 
