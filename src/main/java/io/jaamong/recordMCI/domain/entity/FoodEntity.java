@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "food")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FoodEntity extends BaseEntity {

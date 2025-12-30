@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "activity")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ActivityEntity extends BaseEntity {

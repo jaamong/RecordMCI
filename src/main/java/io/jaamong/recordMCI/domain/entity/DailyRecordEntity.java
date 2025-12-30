@@ -15,6 +15,7 @@ import java.util.List;
 
 @Getter
 @Entity
+@Table(name = "daily_record")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DailyRecordEntity extends BaseEntity {
 
