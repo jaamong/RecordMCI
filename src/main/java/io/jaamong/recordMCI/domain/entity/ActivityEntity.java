@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ActivityEntity extends BaseEntity {
 
+    @Column(name = "activity_id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
