@@ -7,7 +7,7 @@ import java.time.LocalDate;
 public record DailyRecordGetMonthResponse(
         LocalDate date,
         Boolean hasRecord,
-        Boolean hasFoodCompleted,
+        Boolean hasFoodConsumed,
         Boolean hasActivityCompleted,
         Boolean hasMemo
 ) {
