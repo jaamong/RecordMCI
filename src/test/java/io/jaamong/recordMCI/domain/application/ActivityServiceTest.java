@@ -2,6 +2,8 @@ package io.jaamong.recordMCI.domain.application;
 
 import io.jaamong.recordMCI.api.dto.request.ActivityWalkUpdateServiceRequest;
 import io.jaamong.recordMCI.api.dto.response.DailyRecordGetDetailResponse;
+import io.jaamong.recordMCI.api.exception.CustomRuntimeException;
+import io.jaamong.recordMCI.api.exception.ErrorCode;
 import io.jaamong.recordMCI.domain.dto.Activity;
 import io.jaamong.recordMCI.domain.entity.ActivityType;
 import io.jaamong.recordMCI.domain.entity.UserEntity;
@@ -15,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -70,6 +73,22 @@ class ActivityServiceTest {
         assertThat(completedWalk.totalSteps()).isEqualTo(totalSteps);
         assertThat(completedWalk.totalHours()).isEqualTo(totalHours);
         assertThat(completedWalk.totalMinutes()).isEqualTo(totalMinutes);
+    }
+
+    @DisplayName("ActivityEntity.Walk.completed가 false면 예외가 발생하고 수정에 실패한다.")
+    @Test
+    void updateWalkDetail_onFail() {
+        // given
+        UserEntity userEntity = createUser();
+        var dailyRecord = dailyRecordService.getTodayBy(userEntity.getId());
+
+        Long uncompletedWalkId = getWalkIdBy(dailyRecord);
+        var request = createActivityWalkUpdateServiceRequest(uncompletedWalkId, 0,0,0);
+
+        // when, then
+        assertThatThrownBy(() -> activityService.updateWalkDetail(request))
+                .isInstanceOf(CustomRuntimeException.class)
+                .hasMessage(ErrorCode.INVALID_ACTIVITY_WALK_UPDATE_REQUEST.getMessage());
     }
 
     private UserEntity createUser() {
