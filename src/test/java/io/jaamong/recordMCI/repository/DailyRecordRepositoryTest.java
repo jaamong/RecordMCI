@@ -16,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -90,12 +91,30 @@ class DailyRecordRepositoryTest {
                 .hasMessage(ErrorCode.NOT_FOUND_RECORD.getMessage());
     }
 
+    @DisplayName("한달 치 DailyRecord 객체를 조회할 수 있고, List 형태로 반환받는다.")
+    @Test
+    void getMonthBy() {
+        // given
+        LocalDate now = LocalDate.now();
+        int year = now.getYear();
+        int month = now.getMonth().getValue();
+        UserEntity user = createUser();
+        DailyRecordEntity dailyRecord = createDailyRecord(now, user);
+
+        // when
+        List<DailyRecord> response = dailyRecordRepository.getMonthBy(user.getId(), year, month);
+
+        // then
+        assertThat(response).isNotEmpty();
+        assertThat(response.contains(dailyRecord.toModel())).isTrue();
+    }
+
     private UserEntity createUser() {
         UserEntity user = new UserEntity("test1", "password1");
         return usersJpaRepository.save(user);
     }
 
-    private void createDailyRecord(LocalDate targetDate, UserEntity user) {
+    private DailyRecordEntity createDailyRecord(LocalDate targetDate, UserEntity user) {
         DailyRecordEntity dailyRecordEntity = DailyRecordEntity.builder()
                 .date(targetDate)
                 .userEntity(user)
@@ -110,5 +129,7 @@ class DailyRecordRepositoryTest {
         FoodEntity foodEntity = FoodEntity.of(dailyRecordEntity, NutrientType.PROTEIN, "test");
         foodEntity = foodJpaRepository.save(foodEntity);
         dailyRecordEntity.addFood(foodEntity);
+
+        return dailyRecordEntity;
     }
 }

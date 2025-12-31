@@ -1,6 +1,7 @@
 package io.jaamong.recordMCI.domain.application;
 
-import io.jaamong.recordMCI.api.dto.response.DailyRecordGetOneResponse;
+import io.jaamong.recordMCI.api.dto.response.DailyRecordGetDetailResponse;
+import io.jaamong.recordMCI.api.dto.response.DailyRecordGetMonthResponse;
 import io.jaamong.recordMCI.domain.dto.Activity;
 import io.jaamong.recordMCI.domain.dto.Food;
 import io.jaamong.recordMCI.domain.entity.*;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,7 +54,7 @@ class DailyRecordServiceTest {
         UserEntity user = createUser();
 
         // when
-        DailyRecordGetOneResponse response = dailyRecordService.getTodayBy(user.getId());
+        DailyRecordGetDetailResponse response = dailyRecordService.getTodayBy(user.getId());
 
         // then
         assertThat(response).isNotNull();
@@ -80,12 +82,34 @@ class DailyRecordServiceTest {
         createDailyRecord(targetDate, user);
 
         // when
-        DailyRecordGetOneResponse response = dailyRecordService.getDayBy(user.getId(), targetDate);
+        DailyRecordGetDetailResponse response = dailyRecordService.getDayBy(user.getId(), targetDate);
 
         // then
         assertThat(response).isNotNull();
         assertThat(response.foods()).hasSize(1);
         assertThat(response.activities()).hasSize(1);
+    }
+
+    @DisplayName("한달 치 DailyRecord를 리스트로 조회할 수 있고, 상세 조회가 아닌 각 항목의 t/f만을 담는다.")
+    @Test
+    void getMonthlyBy() {
+        // given
+        LocalDate targetDate = LocalDate.now();
+        UserEntity user = createUser();
+        createDailyRecord(targetDate, user);
+
+        int lengthOfMonth = targetDate.withDayOfMonth(targetDate.lengthOfMonth()).getDayOfMonth();
+
+        // when
+        List<DailyRecordGetMonthResponse> response = dailyRecordService.getMonthlyBy(
+                user.getId(),
+                targetDate.getYear(),
+                targetDate.getMonth().getValue()
+        );
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.size()).isEqualTo(lengthOfMonth);
     }
 
     private UserEntity createUser() {
