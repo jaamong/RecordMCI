@@ -1,13 +1,12 @@
 package io.jaamong.recordMCI.api.controller;
 
 import io.jaamong.recordMCI.api.ApiResponse;
+import io.jaamong.recordMCI.api.dto.request.ActivityWalkUpdateRequest;
 import io.jaamong.recordMCI.domain.application.ActivityService;
 import io.jaamong.recordMCI.domain.dto.Activity;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/activities")
@@ -25,6 +24,18 @@ public class ActivityController {
     @PutMapping("/{id}")
     public ApiResponse<Activity> complete(@PathVariable("id") Long id) {
         Activity activity = activityService.invertCompleted(id);
+        return ApiResponse.ok(activity);
+    }
+
+    /**
+     * Activity.WALK 상태가 true인 경우 호출되는 WALK 상세정보 수정 API
+     *
+     * @param `ActivityEntity` DB index
+     * @return Activity 객체와 성공 응답
+     */
+    @PutMapping("/{id}/walk-detail")
+    public ApiResponse<Activity> registerWalkDetail(@PathVariable("id") Long id, @RequestBody @Valid ActivityWalkUpdateRequest request) {
+        Activity activity = activityService.updateWalkDetail(request.toServiceRequest(id));
         return ApiResponse.ok(activity);
     }
 }

@@ -1,5 +1,6 @@
 package io.jaamong.recordMCI.domain.application;
 
+import io.jaamong.recordMCI.api.dto.request.ActivityWalkUpdateServiceRequest;
 import io.jaamong.recordMCI.domain.dto.Activity;
 import io.jaamong.recordMCI.domain.entity.ActivityEntity;
 import io.jaamong.recordMCI.domain.entity.ActivityType;
@@ -26,6 +27,7 @@ public class ActivityService {
      * - walk : 걷기(산책)
      * - bible transcribe : 성경 필사
      * - coloring book : 색칠 공부
+     *
      * @return Activity 리스트
      */
     @Transactional
@@ -48,6 +50,17 @@ public class ActivityService {
     public Activity invertCompleted(Long id) {
         ActivityEntity activityEntity = activityRepository.findById(id);
         activityEntity.invertCompleted();
+        return activityEntity.toModel();
+    }
+
+    @Transactional
+    public Activity updateWalkDetail(ActivityWalkUpdateServiceRequest request) {
+        ActivityEntity activityEntity = activityRepository.findById(request.id());
+        activityEntity.updateWalk(
+                request.totalSteps(),
+                request.totalHours(),
+                request.totalMinutes()
+        );
         return activityEntity.toModel();
     }
 }

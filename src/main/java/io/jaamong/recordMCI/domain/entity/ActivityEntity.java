@@ -1,5 +1,7 @@
 package io.jaamong.recordMCI.domain.entity;
 
+import io.jaamong.recordMCI.api.exception.CustomRuntimeException;
+import io.jaamong.recordMCI.api.exception.ErrorCode;
 import io.jaamong.recordMCI.domain.dto.Activity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -75,6 +77,16 @@ public class ActivityEntity extends BaseEntity {
 
     public void invertCompleted() {
         this.completed = !this.completed;
+    }
+
+    public void updateWalk(int totalSteps, int totalHours, int totalMinutes) {
+        if (this.completed) {
+            this.totalSteps = totalSteps;
+            this.totalHours = totalHours;
+            this.totalMinutes = totalMinutes;
+        } else {
+            throw new CustomRuntimeException(ErrorCode.INVALID_ACTIVITY_WALK_UPDATE_REQUEST);
+        }
     }
 
     @Override
