@@ -139,7 +139,7 @@ public class DailyRecordService {
             return DailyRecordGetMonthResponse.builder()
                     .date(date)
                     .hasRecord(false)
-                    .hasFoodCompleted(false)
+                    .hasFoodConsumed(false)
                     .hasActivityCompleted(false)
                     .hasMemo(false)
                     .build();
@@ -152,7 +152,7 @@ public class DailyRecordService {
         return DailyRecordGetMonthResponse.builder()
                 .date(date)
                 .hasRecord(true)
-                .hasFoodCompleted(hasFoodCompleted)
+                .hasFoodConsumed(hasFoodCompleted)
                 .hasActivityCompleted(hasActivityCompleted)
                 .hasMemo(hasMemo)
                 .build();
