@@ -7,7 +7,7 @@ import lombok.Builder;
 
 import java.util.List;
 
-public record DailyRecordGetOneResponse(
+public record DailyRecordGetDetailResponse(
         Long id,
         List<Food> foods,
         List<Activity> activities,
@@ -15,11 +15,11 @@ public record DailyRecordGetOneResponse(
 ) {
 
     @Builder
-    public DailyRecordGetOneResponse {
+    public DailyRecordGetDetailResponse {
     }
 
-    public static DailyRecordGetOneResponse from(DailyRecord dailyRecord) {
-        return DailyRecordGetOneResponse.builder()
+    public static DailyRecordGetDetailResponse from(DailyRecord dailyRecord) {
+        return DailyRecordGetDetailResponse.builder()
                 .id(dailyRecord.id())
                 .foods(dailyRecord.foods())
                 .activities(dailyRecord.activities())
