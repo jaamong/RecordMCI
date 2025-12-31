@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -34,6 +35,15 @@ public class DailyRecordRepository {
     public Optional<DailyRecord> findDayBy(Long userId, LocalDate targetDate) {
         return dailyRecordJpaRepository.findDateByUserId(userId, targetDate)
                 .map(DailyRecordEntity::toModel);
+    }
+
+    public List<DailyRecord> getMonthBy(Long userId, Integer year, Integer month) {
+        LocalDate startOfMonth = LocalDate.of(year, month, 1);
+        LocalDate endOfMonth = startOfMonth.plusMonths(1).minusDays(1);
+        return dailyRecordJpaRepository
+                .findMonthByUserIdAndYearMonth(userId, startOfMonth, endOfMonth).stream()
+                .map(DailyRecordEntity::toModel)
+                .toList();
     }
 
 }

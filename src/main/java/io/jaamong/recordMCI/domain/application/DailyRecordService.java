@@ -1,7 +1,10 @@
 package io.jaamong.recordMCI.domain.application;
 
-import io.jaamong.recordMCI.api.dto.response.DailyRecordGetOneResponse;
+import io.jaamong.recordMCI.api.dto.response.DailyRecordGetDetailResponse;
+import io.jaamong.recordMCI.api.dto.response.DailyRecordGetMonthResponse;
+import io.jaamong.recordMCI.domain.dto.Activity;
 import io.jaamong.recordMCI.domain.dto.DailyRecord;
+import io.jaamong.recordMCI.domain.dto.Food;
 import io.jaamong.recordMCI.domain.entity.ActivityEntity;
 import io.jaamong.recordMCI.domain.entity.DailyRecordEntity;
 import io.jaamong.recordMCI.domain.entity.FoodEntity;
@@ -14,7 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -34,7 +41,7 @@ public class DailyRecordService {
      * @param userId
      * @return DailyRecord 상세 조회 DTO
      */
-    public DailyRecordGetOneResponse getTodayBy(Long userId) {
+    public DailyRecordGetDetailResponse getTodayBy(Long userId) {
         log.info("[DailyRecordService] getTodayBy :: start : userId={}", userId);
 
         DailyRecord dailyRecord = dailyRecordRepository
@@ -43,7 +50,7 @@ public class DailyRecordService {
 
         log.info("[DailyRecordService] getTodayBy :: finish");
 
-        return DailyRecordGetOneResponse.from(dailyRecord);
+        return DailyRecordGetDetailResponse.from(dailyRecord);
     }
 
     /**
@@ -53,7 +60,7 @@ public class DailyRecordService {
      * @param date
      * @return DailyRecord 상세 조회 DTO
      */
-    public DailyRecordGetOneResponse getDayBy(Long userId, LocalDate date) {
+    public DailyRecordGetDetailResponse getDayBy(Long userId, LocalDate date) {
         log.info("[DailyRecordService] getDayBy :: start : userId={}, date={}", userId, date);
 
         DailyRecord dailyRecord = dailyRecordRepository
@@ -61,7 +68,39 @@ public class DailyRecordService {
                 .orElseGet(() -> initCreate(userId));// 그날의 첫 조회라면 DailyRecord 초기화;
 
         log.info("[DailyRecordService] getDayBy :: finish : dailyRecord={}", dailyRecord);
-        return DailyRecordGetOneResponse.from(dailyRecord);
+        return DailyRecordGetDetailResponse.from(dailyRecord);
+    }
+
+    /**
+     * 특절 월(month)의 DailyRecord 조회
+     *
+     * @param userId
+     * @param year
+     * @param month
+     * @return 일별 DailyRecord 항목 별 상태를 담은 리스트
+     */
+    public List<DailyRecordGetMonthResponse> getMonthlyBy(Long userId, Integer year, Integer month) {
+        // 1. Fetch existing records from DB for this month
+        List<DailyRecord> existingRecords = dailyRecordRepository.getMonthBy(userId, year, month);
+
+        // 2. Create map for date -> record: Map(date, record)
+        Map<LocalDate, DailyRecord> recordMap = existingRecords.stream()
+                .collect(Collectors.toMap(
+                        DailyRecord::date, r -> r)
+                );
+
+        // 3. Generate all days in the month
+        YearMonth yearMonth = YearMonth.of(year, month);
+        List<DailyRecordGetMonthResponse> days = new ArrayList<>();
+
+        for (int day = 1; day <= yearMonth.lengthOfMonth(); day++) {
+            LocalDate date = yearMonth.atDay(day);
+            DailyRecord record = recordMap.get(date);
+
+            days.add(buildMonthResponse(date, record));
+        }
+
+        return days;
     }
 
     /**
@@ -94,4 +133,29 @@ public class DailyRecordService {
 
         return dailyRecordEntity.toModel();
     }
+
+    private DailyRecordGetMonthResponse buildMonthResponse(LocalDate date, DailyRecord record) {
+        if (record == null) {
+            return DailyRecordGetMonthResponse.builder()
+                    .date(date)
+                    .hasRecord(false)
+                    .hasFoodCompleted(false)
+                    .hasActivityCompleted(false)
+                    .hasMemo(false)
+                    .build();
+        }
+
+        boolean hasFoodCompleted = record.foods().stream().anyMatch(Food::consumed);
+        boolean hasActivityCompleted = record.activities().stream().anyMatch(Activity::completed);
+        boolean hasMemo = record.memo() != null && !record.memo().trim().isEmpty();
+
+        return DailyRecordGetMonthResponse.builder()
+                .date(date)
+                .hasRecord(true)
+                .hasFoodCompleted(hasFoodCompleted)
+                .hasActivityCompleted(hasActivityCompleted)
+                .hasMemo(hasMemo)
+                .build();
+    }
+
 }

@@ -15,4 +15,11 @@ public interface DailyRecordJpaRepository extends JpaRepository<DailyRecordEntit
             "dre.date = :date")
     Optional<DailyRecordEntity> findDateByUserId(@Param("userId") Long userId,
                                                  @Param("date") LocalDate date);
+
+    @Query("select dre from DailyRecordEntity dre " +
+            "where dre.userEntity.id = :userId and " +
+            "dre.date between :startOfMonth and :endOfMonth")
+    Optional<DailyRecordEntity> findMonthByUserIdAndYearMonth(@Param("userId") Long userId,
+                                                              @Param("startOfMonth") LocalDate startOfMonth,
+                                                              @Param("endOfMonth") LocalDate endOfMonth);
 }
