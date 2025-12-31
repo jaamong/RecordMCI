@@ -1,14 +1,20 @@
 package io.jaamong.recordMCI.domain.application;
 
+import io.jaamong.recordMCI.api.dto.request.ActivityWalkUpdateServiceRequest;
+import io.jaamong.recordMCI.api.dto.response.DailyRecordGetDetailResponse;
 import io.jaamong.recordMCI.domain.dto.Activity;
+import io.jaamong.recordMCI.domain.entity.ActivityType;
 import io.jaamong.recordMCI.domain.entity.UserEntity;
 import io.jaamong.recordMCI.infrastructure.UsersJpaRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -36,11 +42,50 @@ class ActivityServiceTest {
         Activity completedActivity = activityService.invertCompleted(activity.id());
 
         // then
-        Assertions.assertThat(completedActivity.completed()).isTrue();
+        assertThat(completedActivity.completed()).isTrue();
+    }
+
+    @DisplayName("ActivityEntity.Walk.completed가 true면 walk의 상세 정보를 수정할 수 있다.")
+    @Test
+    void updateWalkDetail() {
+        // given
+        UserEntity userEntity = createUser();
+        var dailyRecord = dailyRecordService.getTodayBy(userEntity.getId());
+
+        Long completedWalkId = getWalkIdBy(dailyRecord);
+
+        Activity completedWalk = activityService.invertCompleted(completedWalkId);
+
+        int totalSteps = 1000;
+        int totalHours = 0;
+        int totalMinutes = 10;
+        var request = createActivityWalkUpdateServiceRequest(completedWalkId, totalSteps, totalHours, totalMinutes);
+
+        // when
+        completedWalk = activityService.updateWalkDetail(request);
+
+        // then
+        assertThat(completedWalk.completed()).isTrue();
+        assertThat(completedWalk.activityType()).isEqualTo(ActivityType.WALK);
+        assertThat(completedWalk.totalSteps()).isEqualTo(totalSteps);
+        assertThat(completedWalk.totalHours()).isEqualTo(totalHours);
+        assertThat(completedWalk.totalMinutes()).isEqualTo(totalMinutes);
     }
 
     private UserEntity createUser() {
         UserEntity user = new UserEntity("test1", "password1");
         return usersJpaRepository.save(user);
+    }
+
+    private Long getWalkIdBy(DailyRecordGetDetailResponse dailyRecord) {
+        Optional<Activity> optionalWalk = dailyRecord.activities().stream()
+                .filter(activity -> activity.activityType().equals(ActivityType.WALK))
+                .findFirst();
+        Activity walk = optionalWalk.get();
+        return walk.id();
+    }
+
+    private ActivityWalkUpdateServiceRequest createActivityWalkUpdateServiceRequest(Long completedWalkId, int totalSteps, int totalHours, int totalMinutes) {
+        return new ActivityWalkUpdateServiceRequest(completedWalkId, totalSteps, totalHours, totalMinutes);
     }
 }
