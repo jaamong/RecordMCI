@@ -46,7 +46,7 @@ public class DailyRecordService {
 
         DailyRecord dailyRecord = dailyRecordRepository
                 .findDayBy(userId, LocalDate.now())
-                .orElseGet(() -> initCreate(userId));// 오늘 첫 조회라면 DailyRecord 초기화
+                .orElseGet(() -> initCreate(userId, LocalDate.now()));// 오늘 첫 조회라면 DailyRecord 초기화
 
         log.info("[DailyRecordService] getTodayBy :: finish");
 
@@ -65,7 +65,7 @@ public class DailyRecordService {
 
         DailyRecord dailyRecord = dailyRecordRepository
                 .findDayBy(userId, date)
-                .orElseGet(() -> initCreate(userId));// 그날의 첫 조회라면 DailyRecord 초기화;
+                .orElseGet(() -> initCreate(userId, date));// 그날의 첫 조회라면 DailyRecord 초기화;
 
         log.info("[DailyRecordService] getDayBy :: finish : dailyRecord={}", dailyRecord);
         return DailyRecordGetDetailResponse.from(dailyRecord);
@@ -111,14 +111,14 @@ public class DailyRecordService {
      * @param userId
      * @return 영속화된 DailyRecord 엔티티
      */
-    private DailyRecord initCreate(Long userId) {
+    private DailyRecord initCreate(Long userId, LocalDate date) {
         log.info("[DailyRecordService] initCreate :: start : userId={}", userId);
 
         UserEntity user = usersRepository.getById(userId);
 
         DailyRecordEntity dailyRecordEntity = DailyRecordEntity.builder()
                 .userEntity(user)
-                .date(LocalDate.now())
+                .date(date)
                 .build();
 
         dailyRecordEntity = dailyRecordRepository.save(dailyRecordEntity);
