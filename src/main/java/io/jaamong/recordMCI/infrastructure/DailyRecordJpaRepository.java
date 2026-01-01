@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface DailyRecordJpaRepository extends JpaRepository<DailyRecordEntity, Long> {
@@ -19,7 +20,7 @@ public interface DailyRecordJpaRepository extends JpaRepository<DailyRecordEntit
     @Query("select dre from DailyRecordEntity dre " +
             "where dre.userEntity.id = :userId and " +
             "dre.date between :startOfMonth and :endOfMonth")
-    Optional<DailyRecordEntity> findMonthByUserIdAndYearMonth(@Param("userId") Long userId,
-                                                              @Param("startOfMonth") LocalDate startOfMonth,
-                                                              @Param("endOfMonth") LocalDate endOfMonth);
+    List<DailyRecordEntity> findMonthByUserIdAndYearMonth(@Param("userId") Long userId,
+                                                          @Param("startOfMonth") LocalDate startOfMonth,
+                                                          @Param("endOfMonth") LocalDate endOfMonth);
 }
