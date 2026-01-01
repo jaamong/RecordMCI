@@ -1,0 +1,148 @@
+/*
+=========================
+    전체 화면 크기 조절 영역
+=========================
+*/
+body {
+  margin: 0;
+  height: 92vh; /* 필요하면 여기 수정 */
+  background-color: #000;
+  color: #f2f2f2;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  display: flex;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.calendar-area {
+  flex: 6;
+  margin-right: 20px;
+}
+
+.items-area {
+  flex: 4;
+  border-left: 1px solid #333;
+  padding-left: 20px;
+}
+
+/* ===== 캘린더 ===== */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.nav {
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.month-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.calendar-weekdays,
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.calendar-weekdays div {
+  text-align: center;
+  padding: 8px 0;
+}
+
+.calendar-days {
+  gap: 6px;
+}
+
+.calendar-day,
+.empty-day {
+  height: 42px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.sun {
+  color: #ff5c5c;
+}
+
+.sat {
+  color: #4aa3ff;
+}
+
+.calendar-day.selected {
+  background-color: #46855e;
+  border-radius: 50%;
+  color: #fff;
+}
+
+/* ===== 날짜 하단 점 ===== */
+.day-dots {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  position: absolute;
+  bottom: 4px;
+}
+
+.day-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+/* 점 색상: 연한 → 진한 순 */
+.dot-food {
+  background-color: #5fa97b;
+}
+
+.dot-activity {
+  background-color: #3f7f5a;
+}
+
+.dot-memo {
+  background-color: #2d5f43;
+}
+
+/* 날짜 박스 위치 기준 */
+.calendar-day {
+  position: relative;
+}
+
+/* ===== items checkbox ===== */
+/* 체크박스 기본 */
+.checkbox {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #ffffff;
+  border-radius: 25%;
+  margin-right: 8px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+/* 체크된 상태 */
+.checkbox.checked {
+  background-color: #46855e;
+  border-color: #46855e;
+}
+
+/* 체크 표시 */
+.checkbox.checked::after {
+  content: "✓";
+  color: #ffffff;
+  font-size: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
