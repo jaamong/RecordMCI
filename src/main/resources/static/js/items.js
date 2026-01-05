@@ -21,9 +21,9 @@ function renderItems(record, dateText) {
   container.appendChild(createActivitySection(record.activities));
 
   /* ===== Memo ===== */
-  container.appendChild(
-    createSection("Memo", record.memo ? [{ name: record.memo }] : [])
-  );
+  if (record.memo !== undefined) {
+    container.appendChild(createMemoSection(record));
+  }
 }
 
 /* ===== 공통 섹션 ===== */
@@ -118,23 +118,38 @@ function createActivitySection(activities) {
     checkbox.className = "checkbox";
     if (activity.completed) checkbox.classList.add("checked");
 
+    const label = document.createElement("span");
+    label.textContent = activity.activityType;
+
+    row.append(checkbox, label);
+    section.appendChild(row);
+
+    // WALK 상세 입력 영역
+    let walkInputs = null;
+
+    if (activity.activityType === "WALK" && activity.completed) {
+      walkInputs = createWalkInputs(activity);
+      section.appendChild(walkInputs);
+    }
+
     checkbox.onclick = async () => {
       try {
         const updated = await updateActivityCompleted(activity.id);
 
-        if (updated.completed) {
-          checkbox.classList.add("checked");
+        checkbox.classList.toggle("checked", updated.completed);
 
-          // WALK 체크 ON
-          if (activity.activityType === "WALK") {
-            showWalkInputs(row, activity);
-          }
-        } else {
-          checkbox.classList.remove("checked");
-
-          // WALK 체크 OFF
-          if (activity.activityType === "WALK") {
-            removeWalkInputs(row);
+        // WALK true → 입력폼 생성
+        if (activity.activityType === "WALK") {
+          if (updated.completed) {
+            if (!walkInputs) {
+              walkInputs = createWalkInputs(updated);
+              section.appendChild(walkInputs);
+            }
+          } else {
+            if (walkInputs) {
+              walkInputs.remove();
+              walkInputs = null;
+            }
           }
         }
 
@@ -143,24 +158,72 @@ function createActivitySection(activities) {
         console.error("Activity 업데이트 실패", e);
       }
     };
-
-    const label = document.createElement("span");
-    label.textContent = activity.activityType; // FIXME: 이름이 나오도록 변경
-
-    row.append(checkbox, label);
-    section.appendChild(row);
-
-    // 최초 렌더링 시 completed=true WALK 처리
-    if (activity.activityType === "WALK" && activity.completed) {
-      showWalkInputs(row, activity);
-    }
   });
 
   return section;
 }
 
+function createWalkInputs(activity) {
+  const container = document.createElement("div");
+  container.className = "walk-inputs";
+  container.style.marginLeft = "24px";
+  container.style.marginTop = "6px";
+
+  const stepsInput = document.createElement("input");
+  stepsInput.type = "number";
+  stepsInput.value = activity.totalSteps ?? "";
+  stepsInput.placeholder = "걸음 수";
+
+  const hoursInput = document.createElement("input");
+  hoursInput.type = "number";
+  hoursInput.value = activity.totalHours ?? "";
+  hoursInput.placeholder = "시간";
+
+  const minutesInput = document.createElement("input");
+  minutesInput.type = "number";
+  minutesInput.value = activity.totalMinutes ?? "";
+  minutesInput.placeholder = "분";
+
+  const saveBtn = document.createElement("button");
+  saveBtn.textContent = "저장";
+  saveBtn.style.marginLeft = "8px";
+
+  saveBtn.onclick = async () => {
+    const payload = {
+      totalSteps: Number(stepsInput.value) || 0,
+      totalHours: Number(hoursInput.value) || 0,
+      totalMinutes: Number(minutesInput.value) || 0,
+    };
+
+    try {
+      saveBtn.disabled = true;
+      saveBtn.textContent = "저장 중...";
+
+      await updateWalkDetail(activity.id, payload);
+
+      saveBtn.textContent = "저장됨";
+      setTimeout(() => (saveBtn.textContent = "저장"), 1000);
+    } catch (e) {
+      console.error(e);
+      alert("WALK 상세 저장 실패");
+      saveBtn.textContent = "저장";
+    } finally {
+      saveBtn.disabled = false;
+    }
+  };
+
+  container.append(
+    labeled("걸음 수", stepsInput),
+    labeled("시간", hoursInput),
+    labeled("분", minutesInput),
+    saveBtn
+  );
+
+  return container;
+}
+
 function showWalkInputs(row, activity) {
-  // 이미 있으면 중복 생성 방지
+  // 중복 생성 방지
   if (row.nextSibling && row.nextSibling.classList?.contains("walk-extra")) {
     return;
   }
@@ -180,29 +243,139 @@ function showWalkInputs(row, activity) {
   minutes.type = "number";
   minutes.placeholder = "분";
 
+  // WALK 상세 값 복원
+  if (activity.totalSteps !== undefined) {
+    steps.value = activity.totalSteps;
+  }
+  if (activity.totalHours !== undefined) {
+    hours.value = activity.totalHours;
+  }
+  if (activity.totalMinutes !== undefined) {
+    minutes.value = activity.totalMinutes;
+  }
+
   wrap.append(steps, hours, minutes);
+  row.after(wrap);
 
   // blur 시 저장
-  [steps, hours, minutes].forEach(() => {
-    wrap.addEventListener(
-      "blur",
-      () => {
-        saveWalkDetail(activity.id, {
-          totalSteps: Number(steps.value) || 0,
-          totalHours: Number(hours.value) || 0,
-          totalMinutes: Number(minutes.value) || 0,
-        });
-      },
-      true
-    );
-  });
-
-  // row 바로 아래 삽입
-  row.after(wrap);
+  wrap.addEventListener(
+    "blur",
+    () => {
+      saveWalkDetail(activity.id, {
+        totalSteps: Number(steps.value) || 0,
+        totalHours: Number(hours.value) || 0,
+        totalMinutes: Number(minutes.value) || 0,
+      });
+    },
+    true
+  );
 }
 
 function removeWalkInputs(row) {
   if (row.nextSibling && row.nextSibling.classList?.contains("walk-extra")) {
     row.nextSibling.remove();
   }
+}
+
+async function updateWalkDetail(activityId, payload) {
+  const res = await fetch(
+    `http://localhost:8080/api/activities/${activityId}/walk-detail`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("WALK 상세 업데이트 실패");
+  }
+
+  const json = await res.json();
+  return json.data;
+}
+
+function labeled(text, input) {
+  const wrapper = document.createElement("div");
+  wrapper.style.display = "inline-block";
+  wrapper.style.marginRight = "8px";
+
+  const label = document.createElement("label");
+  label.textContent = text;
+  label.style.marginRight = "4px";
+
+  wrapper.append(label, input);
+  return wrapper;
+}
+
+function createMemoSection(record) {
+  const section = document.createElement("div");
+  section.style.marginTop = "20px";
+
+  const header = document.createElement("div");
+  header.innerHTML = `<strong>Memo</strong>`;
+
+  const textarea = document.createElement("textarea");
+  textarea.style.width = "100%";
+  textarea.style.height = "80px";
+  textarea.maxLength = 1000;
+  textarea.value = record.memo ?? "";
+
+  const saveBtn = document.createElement("button");
+  saveBtn.textContent = "저장";
+  saveBtn.style.marginTop = "6px";
+
+  saveBtn.onclick = async () => {
+    const value = textarea.value;
+
+    if (value.length > 1000) {
+      alert("메모는 최대 1000자까지 입력할 수 있습니다.");
+      return;
+    }
+
+    try {
+      saveBtn.disabled = true;
+      saveBtn.textContent = "저장 중...";
+
+      const savedMemo = await updateMemo(record.id, value);
+      textarea.value = savedMemo;
+
+      saveBtn.textContent = "저장됨";
+      setTimeout(() => (saveBtn.textContent = "저장"), 1000);
+
+      // 월별 캘린더 dot 즉시 반영
+      await renderCalendar("calendar-area");
+    } catch (e) {
+      console.error(e);
+      alert("Memo 저장 실패");
+      saveBtn.textContent = "저장";
+    } finally {
+      saveBtn.disabled = false;
+    }
+  };
+
+  section.append(header, textarea, saveBtn);
+  return section;
+}
+
+async function updateMemo(dailyRecordId, memo) {
+  const res = await fetch(
+    `http://localhost:8080/api/daily-records/${dailyRecordId}/memo`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ memo }),
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("Memo 저장 실패");
+  }
+
+  const json = await res.json();
+  return json.data; // 저장된 memo 문자열
 }

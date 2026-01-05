@@ -102,15 +102,29 @@ body {
 
 /* 점 색상: 연한 → 진한 순 */
 .dot-food {
-  background-color: #5fa97b;
+  background-color: #5f9b78;
 }
 
 .dot-activity {
-  background-color: #3f7f5a;
+  background-color: #46855e;
 }
 
 .dot-memo {
-  background-color: #2d5f43;
+  background-color: #2f5d43;
+}
+
+.calendar-day .dots {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.calendar-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin: 2px 1px;
 }
 
 /* 날짜 박스 위치 기준 */
@@ -145,4 +159,42 @@ body {
   justify-content: center;
   align-items: center;
   height: 100%;
+}
+
+.walk-inputs input {
+  width: 80px;
+  margin-right: 6px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #46855e;
+  border-radius: 10%;
+}
+
+.walk-inputs button {
+  background: #46855e;
+  color: #fff;
+  border: none;
+  border-radius: 15%;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.walk-inputs button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+textarea {
+  background: #000;
+  color: #fff;
+  border: 1px solid #46855e;
+}
+
+button {
+  background: #46855e;
+  color: #fff;
+  border: none;
+  border-radius: 15%;
+  padding: 4px 10px;
+  cursor: pointer;
 }

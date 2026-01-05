@@ -9,6 +9,12 @@ const todayYear = today.getFullYear();
 const todayMonth = today.getMonth() + 1;
 const todayDate = today.getDate();
 
+const DOT_COLORS = {
+  food: "#5f9b78", // #46855e 보다 살짝 연함
+  activity: "#46855e", // 기준
+  memo: "#2f5d43", // 가장 진함
+};
+
 async function renderCalendar(containerId) {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
@@ -21,8 +27,8 @@ async function renderCalendar(containerId) {
   );
 
   monthlyMap = {};
-  monthlyData.forEach((d) => {
-    monthlyMap[d.date] = d;
+  monthlyData.forEach((day) => {
+    monthlyMap[day.date] = day;
   });
 
   const firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();
@@ -91,13 +97,13 @@ async function renderCalendar(containerId) {
       dots.className = "day-dots";
 
       if (record.hasFoodConsumed) {
-        dots.appendChild(createDot("dot-food"));
+        dots.appendChild(createDot(DOT_COLORS.food));
       }
       if (record.hasActivityCompleted) {
-        dots.appendChild(createDot("dot-activity"));
+        dots.appendChild(createDot(DOT_COLORS.activity));
       }
       if (record.hasMemo) {
-        dots.appendChild(createDot("dot-memo"));
+        dots.appendChild(createDot(DOT_COLORS.memo));
       }
 
       dayEl.appendChild(dots);
@@ -166,4 +172,42 @@ function moveMonth(diff) {
   }
 
   renderCalendar("calendar-area");
+}
+
+function createDot(color) {
+  const dot = document.createElement("div");
+  dot.className = "calendar-dot";
+  dot.style.backgroundColor = color;
+  return dot;
+}
+
+function refreshDayDots(yyyyMMdd) {
+  const day = Number(yyyyMMdd.split("-")[2]);
+
+  const dayEls = document.querySelectorAll(".calendar-day");
+  dayEls.forEach((dayEl) => {
+    if (Number(dayEl.textContent) === day) {
+      // 기존 dot 제거
+      const oldDots = dayEl.querySelector(".day-dots");
+      if (oldDots) oldDots.remove();
+
+      const record = monthlyMap[yyyyMMdd];
+      if (!record) return;
+
+      const dots = document.createElement("div");
+      dots.className = "day-dots";
+
+      if (record.hasFoodConsumed) {
+        dots.appendChild(createDot(DOT_COLORS.food));
+      }
+      if (record.hasActivityCompleted) {
+        dots.appendChild(createDot(DOT_COLORS.activity));
+      }
+      if (record.hasMemo) {
+        dots.appendChild(createDot(DOT_COLORS.memo));
+      }
+
+      dayEl.appendChild(dots);
+    }
+  });
 }
