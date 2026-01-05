@@ -12,15 +12,15 @@ import java.util.Optional;
 public interface DailyRecordJpaRepository extends JpaRepository<DailyRecordEntity, Long> {
 
     @Query("select dre from DailyRecordEntity dre " +
-            "where dre.userEntity.id = :userId AND " +
+            "where dre.userEntity.id = :id AND " +
             "dre.date = :date")
-    Optional<DailyRecordEntity> findDateByUserId(@Param("userId") Long userId,
+    Optional<DailyRecordEntity> findDateByUserId(@Param("id") Long userId,
                                                  @Param("date") LocalDate date);
 
     @Query("select dre from DailyRecordEntity dre " +
-            "where dre.userEntity.id = :userId and " +
+            "where dre.userEntity.id = :id and " +
             "dre.date between :startOfMonth and :endOfMonth")
-    List<DailyRecordEntity> findMonthByUserIdAndYearMonth(@Param("userId") Long userId,
+    List<DailyRecordEntity> findMonthByUserIdAndYearMonth(@Param("id") Long userId,
                                                           @Param("startOfMonth") LocalDate startOfMonth,
                                                           @Param("endOfMonth") LocalDate endOfMonth);
 }

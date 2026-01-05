@@ -22,6 +22,13 @@ public class DailyRecordRepository {
         return dailyRecordJpaRepository.save(dailyRecordEntity);
     }
 
+    public DailyRecordEntity getDayById(Long id) {
+        return dailyRecordJpaRepository
+                .findById(id)
+                .orElseThrow(() -> new CustomRuntimeException(ErrorCode.NOT_FOUND_RECORD));
+
+    }
+
     public Optional<DailyRecord> findTodayByUserId(Long userId) {
         LocalDate today = LocalDate.now();
         return findDayBy(userId, today);

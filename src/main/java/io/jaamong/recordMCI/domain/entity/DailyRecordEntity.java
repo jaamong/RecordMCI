@@ -96,4 +96,8 @@ public class DailyRecordEntity extends BaseEntity {
                 .map(ActivityEntity::toModel)
                 .toList();
     }
+
+    public void updateMemo(String memo) {
+        this.memo = memo;
+    }
 }

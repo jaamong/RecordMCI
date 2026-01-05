@@ -1,5 +1,6 @@
 package io.jaamong.recordMCI.domain.application;
 
+import io.jaamong.recordMCI.api.dto.request.DailyRecordMemoUpdateServiceRequest;
 import io.jaamong.recordMCI.api.dto.response.DailyRecordGetDetailResponse;
 import io.jaamong.recordMCI.api.dto.response.DailyRecordGetMonthResponse;
 import io.jaamong.recordMCI.domain.dto.Activity;
@@ -42,7 +43,7 @@ public class DailyRecordService {
      * @return DailyRecord 상세 조회 DTO
      */
     public DailyRecordGetDetailResponse getTodayBy(Long userId) {
-        log.info("[DailyRecordService] getTodayBy :: start : userId={}", userId);
+        log.info("[DailyRecordService] getTodayBy :: start : id={}", userId);
 
         DailyRecord dailyRecord = dailyRecordRepository
                 .findDayBy(userId, LocalDate.now())
@@ -61,7 +62,7 @@ public class DailyRecordService {
      * @return DailyRecord 상세 조회 DTO
      */
     public DailyRecordGetDetailResponse getDayBy(Long userId, LocalDate date) {
-        log.info("[DailyRecordService] getDayBy :: start : userId={}, date={}", userId, date);
+        log.info("[DailyRecordService] getDayBy :: start : id={}, date={}", userId, date);
 
         DailyRecord dailyRecord = dailyRecordRepository
                 .findDayBy(userId, date)
@@ -103,6 +104,17 @@ public class DailyRecordService {
         return days;
     }
 
+    @Transactional
+    public String patchMemo(DailyRecordMemoUpdateServiceRequest request) {
+        log.info("[DailyRecordService] patchMemo :: start : request={}", request.toString());
+
+        DailyRecordEntity dailyRecordEntity = dailyRecordRepository.getDayById(request.id());
+        dailyRecordEntity.updateMemo(request.memo());
+
+        log.info("[DailyRecordService] patchMemo :: finish");
+        return dailyRecordEntity.getMemo();
+    }
+
     /**
      * 금일 첫 DailyRecord 생성
      * - Food, Activity 모두 초기 구성으로 생성됨
@@ -112,7 +124,7 @@ public class DailyRecordService {
      * @return 영속화된 DailyRecord 엔티티
      */
     private DailyRecord initCreate(Long userId, LocalDate date) {
-        log.info("[DailyRecordService] initCreate :: start : userId={}", userId);
+        log.info("[DailyRecordService] initCreate :: start : id={}", userId);
 
         UserEntity user = usersRepository.getById(userId);
 
@@ -157,5 +169,4 @@ public class DailyRecordService {
                 .hasMemo(hasMemo)
                 .build();
     }
-
 }
