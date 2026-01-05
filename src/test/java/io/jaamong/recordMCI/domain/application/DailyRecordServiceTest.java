@@ -1,5 +1,6 @@
 package io.jaamong.recordMCI.domain.application;
 
+import io.jaamong.recordMCI.api.dto.request.DailyRecordMemoUpdateServiceRequest;
 import io.jaamong.recordMCI.api.dto.response.DailyRecordGetDetailResponse;
 import io.jaamong.recordMCI.api.dto.response.DailyRecordGetMonthResponse;
 import io.jaamong.recordMCI.domain.dto.Activity;
@@ -110,6 +111,25 @@ class DailyRecordServiceTest {
         // then
         assertThat(response).isNotNull();
         assertThat(response.size()).isEqualTo(lengthOfMonth);
+    }
+
+    @DisplayName("메모를 작성할 수 있다.")
+    @Test
+    void patchMemo() {
+        // given
+        LocalDate targetDate = LocalDate.now();
+        UserEntity user = createUser();
+        createDailyRecord(targetDate, user);
+
+        var dailyRecord = dailyRecordService.getDayBy(user.getId(), targetDate);
+
+        // when
+        String memo = "메모 테스트";
+        String result = dailyRecordService.patchMemo(new DailyRecordMemoUpdateServiceRequest(dailyRecord.id(), memo));
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(memo);
     }
 
     private UserEntity createUser() {
