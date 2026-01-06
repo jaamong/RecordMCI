@@ -84,7 +84,8 @@ function createFoodSection(foods) {
         } else {
           checkbox.classList.remove("checked");
         }
-        await renderCalendar("calendar-area");
+        monthlyMap[selectedDate].hasFoodConsumed = updated.consumed;
+        refreshSelectedDayDots();
       } catch (e) {
         console.error("Food 업데이트 실패", e);
       }
@@ -119,7 +120,7 @@ function createActivitySection(activities) {
     if (activity.completed) checkbox.classList.add("checked");
 
     const label = document.createElement("span");
-    label.textContent = activity.activityType;
+    label.textContent = activity.name;
 
     row.append(checkbox, label);
     section.appendChild(row);
@@ -127,7 +128,7 @@ function createActivitySection(activities) {
     // WALK 상세 입력 영역
     let walkInputs = null;
 
-    if (activity.activityType === "WALK" && activity.completed) {
+    if (activity.name === "걷기" && activity.completed) {
       walkInputs = createWalkInputs(activity);
       section.appendChild(walkInputs);
     }
@@ -139,7 +140,7 @@ function createActivitySection(activities) {
         checkbox.classList.toggle("checked", updated.completed);
 
         // WALK true → 입력폼 생성
-        if (activity.activityType === "WALK") {
+        if (activity.name === "걷기") {
           if (updated.completed) {
             if (!walkInputs) {
               walkInputs = createWalkInputs(updated);
@@ -153,7 +154,8 @@ function createActivitySection(activities) {
           }
         }
 
-        await renderCalendar("calendar-area");
+        monthlyMap[selectedDate].hasActivityCompleted = updated.completed;
+        refreshSelectedDayDots();
       } catch (e) {
         console.error("Activity 업데이트 실패", e);
       }
@@ -346,7 +348,8 @@ function createMemoSection(record) {
       setTimeout(() => (saveBtn.textContent = "저장"), 1000);
 
       // 월별 캘린더 dot 즉시 반영
-      await renderCalendar("calendar-area");
+      monthlyMap[selectedDate].hasMemo = textarea.value.trim().length > 0;
+      refreshSelectedDayDots();
     } catch (e) {
       console.error(e);
       alert("Memo 저장 실패");

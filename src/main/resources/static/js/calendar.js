@@ -9,6 +9,8 @@ const todayYear = today.getFullYear();
 const todayMonth = today.getMonth() + 1;
 const todayDate = today.getDate();
 
+let selectedDate = null; // yyyy-MM-dd
+
 const DOT_COLORS = {
   food: "#5f9b78", // #46855e 보다 살짝 연함
   activity: "#46855e", // 기준
@@ -125,12 +127,6 @@ async function renderCalendar(containerId) {
   container.append(header, weekdays, daysGrid);
 }
 
-function createDot(className) {
-  const dot = document.createElement("div");
-  dot.className = `day-dot ${className}`;
-  return dot;
-}
-
 /* ===== 날짜 선택 ===== */
 async function selectDate(day) {
   document
@@ -144,15 +140,15 @@ async function selectDate(day) {
     }
   });
 
-  const yyyyMMdd = `${currentYear}-${String(currentMonth).padStart(
+  selectedDate = `${currentYear}-${String(currentMonth).padStart(
     2,
     "0"
   )}-${String(day).padStart(2, "0")}`;
 
-  console.log("선택 날짜:", yyyyMMdd);
+  console.log("선택 날짜:", selectedDate);
 
   // DailyRecord 상세 조회
-  const record = await fetchDailyRecord(USER_ID, yyyyMMdd);
+  const record = await fetchDailyRecord(USER_ID, selectedDate);
 
   renderItems(record, `${currentYear}년 ${currentMonth}월 ${day}일`);
 }
@@ -210,4 +206,39 @@ function refreshDayDots(yyyyMMdd) {
       dayEl.appendChild(dots);
     }
   });
+}
+
+function refreshSelectedDayDots() {
+  if (!selectedDate) return;
+
+  const record = monthlyMap[selectedDate];
+  if (!record) return;
+
+  const dayNumber = Number(selectedDate.split("-")[2]);
+
+  const dayEls = document.querySelectorAll(".calendar-day");
+  const targetDayEl = Array.from(dayEls).find(
+    (el) => Number(el.textContent) === dayNumber
+  );
+
+  if (!targetDayEl) return;
+
+  let dots = targetDayEl.querySelector(".day-dots");
+  if (!dots) {
+    dots = document.createElement("div");
+    dots.className = "day-dots";
+    targetDayEl.appendChild(dots);
+  }
+
+  dots.innerHTML = "";
+
+  if (record.hasFoodConsumed) {
+    dots.appendChild(createDot(DOT_COLORS.food));
+  }
+  if (record.hasActivityCompleted) {
+    dots.appendChild(createDot(DOT_COLORS.activity));
+  }
+  if (record.hasMemo) {
+    dots.appendChild(createDot(DOT_COLORS.memo));
+  }
 }
