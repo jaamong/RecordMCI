@@ -122,7 +122,7 @@ class DailyRecordRepositoryTest {
 
         dailyRecordRepository.save(dailyRecordEntity);
 
-        ActivityEntity activityEntity = ActivityEntity.of(dailyRecordEntity, ActivityType.WALK);
+        ActivityEntity activityEntity = ActivityEntity.of(dailyRecordEntity, ActivityInitialType.WALK.getType());
         activityEntity = activityJpaRepository.save(activityEntity);
         dailyRecordEntity.addActivity(activityEntity);
 

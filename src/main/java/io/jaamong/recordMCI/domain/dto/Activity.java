@@ -1,13 +1,12 @@
 package io.jaamong.recordMCI.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.jaamong.recordMCI.domain.entity.ActivityType;
 import lombok.Builder;
 
 public record Activity(
         Long id,
         Long dailyRecordId,
-        ActivityType activityType,
+        String name,
         boolean completed,
         @JsonInclude(JsonInclude.Include.NON_NULL)
         Integer totalSteps,

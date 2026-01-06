@@ -66,11 +66,11 @@ class DailyRecordServiceTest {
                 .containsExactlyInAnyOrder("콩류", "브로콜리", "견과류", "요거트", "블루베리");
 
         assertThat(response.activities()).hasSize(3);
-        assertThat(response.activities()).extracting(Activity::activityType)
+        assertThat(response.activities()).extracting(Activity::name)
                 .containsExactlyInAnyOrder(
-                        ActivityType.WALK,
-                        ActivityType.BIBLE_TRANSCRIBE,
-                        ActivityType.COLORING_BOOK
+                        ActivityInitialType.WALK.getType(),
+                        ActivityInitialType.BIBLE_TRANSCRIBE.getType(),
+                        ActivityInitialType.COLORING_BOOK.getType()
                 );
     }
 
@@ -145,7 +145,7 @@ class DailyRecordServiceTest {
 
         dailyRecordRepository.save(dailyRecordEntity);
 
-        ActivityEntity activityEntity = ActivityEntity.of(dailyRecordEntity, ActivityType.WALK);
+        ActivityEntity activityEntity = ActivityEntity.of(dailyRecordEntity, ActivityInitialType.WALK.getType());
         activityEntity = activityJpaRepository.save(activityEntity);
         dailyRecordEntity.addActivity(activityEntity);
 

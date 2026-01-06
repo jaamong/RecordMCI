@@ -24,8 +24,7 @@ public class ActivityEntity extends BaseEntity {
     @JoinColumn(name = "daily_record_id")
     private DailyRecordEntity dailyRecordEntity;
 
-    @Enumerated(EnumType.STRING)
-    private ActivityType activityType;  // "Walk", "Bible transcribe", "Coloring book"
+    private String name;  // initial: "걷기"(Walk), "성경필사"(Bible transcribe), "컬러링북"(Coloring book)
 
     private boolean completed = false;  // For the checkbox
 
@@ -35,22 +34,22 @@ public class ActivityEntity extends BaseEntity {
     private Integer totalMinutes;        // null for non-Walk activities
 
     @Builder
-    public ActivityEntity(DailyRecordEntity dailyRecordEntity, ActivityType activityType, boolean completed, Integer totalSteps, Integer totalHours, Integer totalMinutes) {
+    public ActivityEntity(DailyRecordEntity dailyRecordEntity, String name, boolean completed, Integer totalSteps, Integer totalHours, Integer totalMinutes) {
         this.dailyRecordEntity = dailyRecordEntity;
-        this.activityType = activityType;
+        this.name = name;
         this.completed = completed;
         this.totalSteps = totalSteps;
         this.totalHours = totalHours;
         this.totalMinutes = totalMinutes;
     }
 
-    public static ActivityEntity of(DailyRecordEntity dailyRecordEntity, ActivityType activityType) {
+    public static ActivityEntity of(DailyRecordEntity dailyRecordEntity, String name) {
         ActivityEntity activityEntity = builder()
                 .dailyRecordEntity(dailyRecordEntity)
-                .activityType(activityType)
+                .name(name)
                 .build();
 
-        if (activityType == ActivityType.WALK) {
+        if (name.equals("걷기")) {
             activityEntity.totalSteps = 0;
             activityEntity.totalHours = 0;
             activityEntity.totalMinutes = 0;
@@ -63,7 +62,7 @@ public class ActivityEntity extends BaseEntity {
         return Activity.builder()
                 .id(id)
                 .dailyRecordId(dailyRecordEntity.getId())
-                .activityType(activityType)
+                .name(name)
                 .completed(completed)
                 .totalSteps(totalSteps)
                 .totalHours(totalHours)
@@ -93,8 +92,8 @@ public class ActivityEntity extends BaseEntity {
     public String toString() {
         return "ActivityEntity{" +
                 "id=" + id +
-                ", dailyRecord.id=" + dailyRecordEntity.getId() +
-                ", activityType='" + activityType + '\'' +
+                ", dailyRecordEntity=" + dailyRecordEntity.getId() +
+                ", name=" + name +
                 ", completed=" + completed +
                 ", totalSteps=" + totalSteps +
                 ", totalHours=" + totalHours +
