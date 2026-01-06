@@ -80,9 +80,9 @@ body {
 }
 
 .calendar-day.selected {
-  background-color: #46855e;
-  border-radius: 50%;
-  color: #fff;
+  background-color: #fff;
+  border-radius: 25%;
+  color: #1e1e1e;
 }
 
 /* ===== 날짜 하단 점 ===== */
