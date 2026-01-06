@@ -15,8 +15,8 @@ public class ActivityRepository {
 
     private final ActivityJpaRepository activityJpaRepository;
 
-    public void save(ActivityEntity activityEntity) {
-        activityJpaRepository.save(activityEntity);
+    public ActivityEntity save(ActivityEntity activityEntity) {
+        return activityJpaRepository.save(activityEntity);
     }
 
     public List<ActivityEntity> saveAll(List<ActivityEntity> activities) {

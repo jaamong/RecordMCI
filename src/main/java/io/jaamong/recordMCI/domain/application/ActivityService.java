@@ -1,11 +1,13 @@
 package io.jaamong.recordMCI.domain.application;
 
+import io.jaamong.recordMCI.api.dto.request.ActivitySaveServiceRequest;
 import io.jaamong.recordMCI.api.dto.request.ActivityWalkUpdateServiceRequest;
 import io.jaamong.recordMCI.domain.dto.Activity;
 import io.jaamong.recordMCI.domain.entity.ActivityEntity;
-import io.jaamong.recordMCI.domain.entity.ActivityType;
+import io.jaamong.recordMCI.domain.entity.ActivityInitialType;
 import io.jaamong.recordMCI.domain.entity.DailyRecordEntity;
 import io.jaamong.recordMCI.domain.repository.ActivityRepository;
+import io.jaamong.recordMCI.domain.repository.DailyRecordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import java.util.List;
 public class ActivityService {
 
     private final ActivityRepository activityRepository;
+    private final DailyRecordRepository dailyRecordRepository;
 
     /**
      * DailyRecord가 오늘 처음 생성될 때 같이 생성되는 디폴트 activity
@@ -32,9 +35,9 @@ public class ActivityService {
      */
     @Transactional
     public List<ActivityEntity> initCreate(DailyRecordEntity dailyRecordEntity) {
-        ActivityEntity walk = ActivityEntity.of(dailyRecordEntity, ActivityType.WALK);
-        ActivityEntity bibleTranscribe = ActivityEntity.of(dailyRecordEntity, ActivityType.BIBLE_TRANSCRIBE);
-        ActivityEntity coloringBook = ActivityEntity.of(dailyRecordEntity, ActivityType.COLORING_BOOK);
+        ActivityEntity walk = ActivityEntity.of(dailyRecordEntity, ActivityInitialType.WALK.getType());
+        ActivityEntity bibleTranscribe = ActivityEntity.of(dailyRecordEntity, ActivityInitialType.BIBLE_TRANSCRIBE.getType());
+        ActivityEntity coloringBook = ActivityEntity.of(dailyRecordEntity, ActivityInitialType.COLORING_BOOK.getType());
 
         List<ActivityEntity> activities = new ArrayList<>();
         activities.add(walk);
@@ -44,6 +47,18 @@ public class ActivityService {
         activities = activityRepository.saveAll(activities);
 
         return activities;
+    }
+
+    @Transactional
+    public Activity create(ActivitySaveServiceRequest request) {
+        log.info("[ActivityService] create :: start : request={}", request);
+
+        DailyRecordEntity dailyRecordEntity = dailyRecordRepository.getDayById(request.dailyRecordId());
+        ActivityEntity activityEntity = ActivityEntity.of(dailyRecordEntity, request.name());
+        Activity activity = activityRepository.save(activityEntity).toModel();
+
+        log.info("[ActivityService] create :: finish : activity={}", activity);
+        return activity;
     }
 
     @Transactional

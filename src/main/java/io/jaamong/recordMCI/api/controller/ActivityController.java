@@ -1,6 +1,7 @@
 package io.jaamong.recordMCI.api.controller;
 
 import io.jaamong.recordMCI.api.ApiResponse;
+import io.jaamong.recordMCI.api.dto.request.ActivitySaveRequest;
 import io.jaamong.recordMCI.api.dto.request.ActivityWalkUpdateRequest;
 import io.jaamong.recordMCI.domain.application.ActivityService;
 import io.jaamong.recordMCI.domain.dto.Activity;
@@ -36,6 +37,18 @@ public class ActivityController {
     @PutMapping("/{id}/walk-detail")
     public ApiResponse<Activity> registerWalkDetail(@PathVariable("id") Long id, @RequestBody @Valid ActivityWalkUpdateRequest request) {
         Activity activity = activityService.updateWalkDetail(request.toServiceRequest(id));
+        return ApiResponse.ok(activity);
+    }
+
+    /**
+     * 새로운 Activity 추가
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping
+    public ApiResponse<Activity> add(@RequestBody @Valid ActivitySaveRequest request) {
+        Activity activity = activityService.create(request.toServiceRequest());
         return ApiResponse.ok(activity);
     }
 }
