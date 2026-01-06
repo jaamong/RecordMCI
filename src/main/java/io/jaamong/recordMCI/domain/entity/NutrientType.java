@@ -1,7 +1,11 @@
 package io.jaamong.recordMCI.domain.entity;
 
+import io.jaamong.recordMCI.api.exception.CustomRuntimeException;
+import io.jaamong.recordMCI.api.exception.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.util.Arrays;
 
 @Getter
 @AllArgsConstructor
@@ -13,4 +17,11 @@ public enum NutrientType {
     FAT("지방");
 
     final private String type;
+
+    public static NutrientType of(String type) {
+        return Arrays.stream(NutrientType.values())
+                .filter(n -> n.getType().equals(type))
+                .findFirst()
+                .orElseThrow(() -> new CustomRuntimeException(ErrorCode.INVALID_NUTRIENT_TYPE));
+    }
 }

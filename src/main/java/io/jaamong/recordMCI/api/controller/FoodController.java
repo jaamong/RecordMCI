@@ -1,13 +1,12 @@
 package io.jaamong.recordMCI.api.controller;
 
 import io.jaamong.recordMCI.api.ApiResponse;
+import io.jaamong.recordMCI.api.dto.request.FoodSaveRequest;
 import io.jaamong.recordMCI.domain.application.FoodService;
 import io.jaamong.recordMCI.domain.dto.Food;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/foods")
@@ -25,6 +24,18 @@ public class FoodController {
     @PutMapping("/{id}")
     public ApiResponse<Food> consume(@PathVariable("id") Long id) {
         Food food = foodService.invertConsumed(id);
+        return ApiResponse.ok(food);
+    }
+
+    /**
+     * 새로운 식품 추가
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping
+    public ApiResponse<Food> add(@Valid @RequestBody FoodSaveRequest request) {
+        Food food = foodService.create(request.toServiceRequest());
         return ApiResponse.ok(food);
     }
 }

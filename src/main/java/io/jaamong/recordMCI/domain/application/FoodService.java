@@ -1,9 +1,11 @@
 package io.jaamong.recordMCI.domain.application;
 
+import io.jaamong.recordMCI.api.dto.request.FoodSaveServiceRequest;
 import io.jaamong.recordMCI.domain.dto.Food;
 import io.jaamong.recordMCI.domain.entity.DailyRecordEntity;
 import io.jaamong.recordMCI.domain.entity.FoodEntity;
 import io.jaamong.recordMCI.domain.entity.NutrientType;
+import io.jaamong.recordMCI.domain.repository.DailyRecordRepository;
 import io.jaamong.recordMCI.domain.repository.FoodRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,7 @@ import java.util.List;
 public class FoodService {
 
     private final FoodRepository foodRepository;
+    private final DailyRecordRepository dailyRecordRepository;
 
     /**
      * DailyRecord가 오늘 처음 생성될 때 같이 생성되는 디폴트 food
@@ -48,6 +51,25 @@ public class FoodService {
         foodEntities = foodRepository.saveAll(foodEntities);
 
         return foodEntities;
+    }
+
+    /**
+     * 새로운 Food 추가
+     * - consumed 필드는 false로 초기화한다.
+     *
+     * @param request
+     * @return
+     */
+    @Transactional
+    public Food create(FoodSaveServiceRequest request) {
+        log.info("[FoodService] create :: start : request={}", request);
+
+        DailyRecordEntity dailyRecordEntity = dailyRecordRepository.getDayById(request.dailyRecordId());
+        FoodEntity foodEntity = FoodEntity.of(dailyRecordEntity, request.nutrientType(), request.name());
+        Food food = foodRepository.save(foodEntity).toModel();
+
+        log.info("[FoodService] create :: finish : food={}", food.toString());
+        return food;
     }
 
     @Transactional

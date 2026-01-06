@@ -16,6 +16,10 @@ public class FoodRepository {
 
     private final FoodJpaRepository foodJpaRepository;
 
+    public FoodEntity save(FoodEntity foodEntity) {
+        return foodJpaRepository.save(foodEntity);
+    }
+
     public List<FoodEntity> saveAll(List<FoodEntity> foodEntities) {
         return foodJpaRepository.saveAll(foodEntities);
     }
