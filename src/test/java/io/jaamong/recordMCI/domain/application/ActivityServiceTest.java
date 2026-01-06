@@ -1,11 +1,12 @@
 package io.jaamong.recordMCI.domain.application;
 
+import io.jaamong.recordMCI.api.dto.request.ActivitySaveRequest;
 import io.jaamong.recordMCI.api.dto.request.ActivityWalkUpdateServiceRequest;
 import io.jaamong.recordMCI.api.dto.response.DailyRecordGetDetailResponse;
 import io.jaamong.recordMCI.api.exception.CustomRuntimeException;
 import io.jaamong.recordMCI.api.exception.ErrorCode;
 import io.jaamong.recordMCI.domain.dto.Activity;
-import io.jaamong.recordMCI.domain.entity.ActivityType;
+import io.jaamong.recordMCI.domain.entity.ActivityInitialType;
 import io.jaamong.recordMCI.domain.entity.UserEntity;
 import io.jaamong.recordMCI.infrastructure.UsersJpaRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -32,6 +33,28 @@ class ActivityServiceTest {
     @Autowired
     UsersJpaRepository usersJpaRepository;
 
+    @DisplayName("새로운 Activity를 추가할 수 있다.")
+    @Test
+    void create() {
+        // given
+        UserEntity userEntity = createUser();
+        var recordGetDetailResponse = dailyRecordService.getTodayBy(userEntity.getId());
+
+        String name = "test activity";
+        ActivitySaveRequest request = ActivitySaveRequest.builder()
+                .dailyRecordId(recordGetDetailResponse.id())
+                .name(name)
+                .build();
+
+        // when
+        Activity result = activityService.create(request.toServiceRequest());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result)
+                .extracting("name", "completed")
+                .containsExactlyInAnyOrder(name, false);
+    }
 
     @DisplayName("ActivityEntity의 completed 필드를 반전(invert)시킬 수 있다: 초기화된 DailyRecord가 가진 Activity 중 하나를 true로 만든다.")
     @Test
@@ -69,7 +92,7 @@ class ActivityServiceTest {
 
         // then
         assertThat(completedWalk.completed()).isTrue();
-        assertThat(completedWalk.activityType()).isEqualTo(ActivityType.WALK);
+        assertThat(completedWalk.name()).isEqualTo(ActivityInitialType.WALK.getType());
         assertThat(completedWalk.totalSteps()).isEqualTo(totalSteps);
         assertThat(completedWalk.totalHours()).isEqualTo(totalHours);
         assertThat(completedWalk.totalMinutes()).isEqualTo(totalMinutes);
@@ -83,7 +106,7 @@ class ActivityServiceTest {
         var dailyRecord = dailyRecordService.getTodayBy(userEntity.getId());
 
         Long uncompletedWalkId = getWalkIdBy(dailyRecord);
-        var request = createActivityWalkUpdateServiceRequest(uncompletedWalkId, 0,0,0);
+        var request = createActivityWalkUpdateServiceRequest(uncompletedWalkId, 0, 0, 0);
 
         // when, then
         assertThatThrownBy(() -> activityService.updateWalkDetail(request))
@@ -98,7 +121,7 @@ class ActivityServiceTest {
 
     private Long getWalkIdBy(DailyRecordGetDetailResponse dailyRecord) {
         Optional<Activity> optionalWalk = dailyRecord.activities().stream()
-                .filter(activity -> activity.activityType().equals(ActivityType.WALK))
+                .filter(activity -> activity.name().equals(ActivityInitialType.WALK.getType()))
                 .findFirst();
         Activity walk = optionalWalk.get();
         return walk.id();
