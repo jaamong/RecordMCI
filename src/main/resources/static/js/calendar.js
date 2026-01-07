@@ -1,3 +1,25 @@
+/**
+ * calendar.js
+├─ 상태
+│  ├─ currentYear / currentMonth
+│  ├─ selectedDate
+│  ├─ monthlyMap
+│
+├─ 렌더링
+│  ├─ renderCalendar()
+│  ├─ renderDots()
+│
+├─ 사용자 액션
+│  ├─ selectDate()
+│  ├─ moveMonth()
+│
+├─ 상태 반영 API
+│  ├─ updateCalendarDot()     //외부에서 호출
+│  └─ refreshDayDotsByDate()
+ */
+
+import { renderItems } from "./items/items.js";
+
 let currentYear;
 let currentMonth;
 let monthlyMap = {}; // date -> record 상태
@@ -11,13 +33,18 @@ const todayDate = today.getDate();
 
 let selectedDate = null; // yyyy-MM-dd
 
-const DOT_COLORS = {
-  food: "#5f9b78", // #46855e 보다 살짝 연함
-  activity: "#46855e", // 기준
-  memo: "#2f5d43", // 가장 진함
-};
+function initCalendarState() {
+  currentYear = todayYear;
+  currentMonth = todayMonth;
+}
 
-async function renderCalendar(containerId) {
+export async function renderCalendar(containerId) {
+  // 최초 1회 초기화
+  if (!currentYear || !currentMonth) {
+    initCalendarState();
+  }
+  console.log("calendar init:", currentYear, currentMonth);
+
   const container = document.getElementById(containerId);
   container.innerHTML = "";
 
@@ -95,20 +122,7 @@ async function renderCalendar(containerId) {
     // 날짜 아래 점 표시
     const record = monthlyMap[yyyyMMdd];
     if (record) {
-      const dots = document.createElement("div");
-      dots.className = "day-dots";
-
-      if (record.hasFoodConsumed) {
-        dots.appendChild(createDot(DOT_COLORS.food));
-      }
-      if (record.hasActivityCompleted) {
-        dots.appendChild(createDot(DOT_COLORS.activity));
-      }
-      if (record.hasMemo) {
-        dots.appendChild(createDot(DOT_COLORS.memo));
-      }
-
-      dayEl.appendChild(dots);
+      dayEl.appendChild(renderDots(record));
     }
 
     // 오늘 자동 선택
@@ -170,75 +184,61 @@ function moveMonth(diff) {
   renderCalendar("calendar-area");
 }
 
-function createDot(color) {
+function createDot(type) {
   const dot = document.createElement("div");
-  dot.className = "calendar-dot";
-  dot.style.backgroundColor = color;
+  dot.className = `calendar-dot ${type}`; // food | activity | memo
   return dot;
 }
 
-function refreshDayDots(yyyyMMdd) {
-  const day = Number(yyyyMMdd.split("-")[2]);
-
-  const dayEls = document.querySelectorAll(".calendar-day");
-  dayEls.forEach((dayEl) => {
-    if (Number(dayEl.textContent) === day) {
-      // 기존 dot 제거
-      const oldDots = dayEl.querySelector(".day-dots");
-      if (oldDots) oldDots.remove();
-
-      const record = monthlyMap[yyyyMMdd];
-      if (!record) return;
-
-      const dots = document.createElement("div");
-      dots.className = "day-dots";
-
-      if (record.hasFoodConsumed) {
-        dots.appendChild(createDot(DOT_COLORS.food));
-      }
-      if (record.hasActivityCompleted) {
-        dots.appendChild(createDot(DOT_COLORS.activity));
-      }
-      if (record.hasMemo) {
-        dots.appendChild(createDot(DOT_COLORS.memo));
-      }
-
-      dayEl.appendChild(dots);
-    }
-  });
-}
-
-function refreshSelectedDayDots() {
-  if (!selectedDate) return;
-
-  const record = monthlyMap[selectedDate];
-  if (!record) return;
-
-  const dayNumber = Number(selectedDate.split("-")[2]);
-
-  const dayEls = document.querySelectorAll(".calendar-day");
-  const targetDayEl = Array.from(dayEls).find(
-    (el) => Number(el.textContent) === dayNumber
-  );
-
-  if (!targetDayEl) return;
-
-  let dots = targetDayEl.querySelector(".day-dots");
-  if (!dots) {
-    dots = document.createElement("div");
-    dots.className = "day-dots";
-    targetDayEl.appendChild(dots);
-  }
-
-  dots.innerHTML = "";
+function renderDots(record) {
+  const dots = document.createElement("div");
+  dots.className = "day-dots";
 
   if (record.hasFoodConsumed) {
-    dots.appendChild(createDot(DOT_COLORS.food));
+    dots.appendChild(createDot("food"));
   }
   if (record.hasActivityCompleted) {
-    dots.appendChild(createDot(DOT_COLORS.activity));
+    dots.appendChild(createDot("activity"));
   }
   if (record.hasMemo) {
-    dots.appendChild(createDot(DOT_COLORS.memo));
+    dots.appendChild(createDot("memo"));
   }
+
+  return dots;
+}
+
+export function updateCalendarDot(type, enabled) {
+  if (!monthlyMap[selectedDate]) return;
+
+  switch (type) {
+    case "food":
+      monthlyMap[selectedDate].hasFoodConsumed = enabled;
+      break;
+    case "activity":
+      monthlyMap[selectedDate].hasActivityCompleted = enabled;
+      break;
+    case "memo":
+      monthlyMap[selectedDate].hasMemo = enabled;
+      break;
+  }
+
+  refreshDayDotsByDate(selectedDate);
+}
+
+function refreshDayDotsByDate(yyyyMMdd) {
+  const day = Number(yyyyMMdd.split("-")[2]);
+
+  const dayEl = Array.from(document.querySelectorAll(".calendar-day")).find(
+    (el) => Number(el.textContent) === day
+  );
+
+  if (!dayEl) return;
+
+  const oldDots = dayEl.querySelector(".day-dots");
+  if (oldDots) oldDots.remove();
+
+  const record = monthlyMap[yyyyMMdd];
+  if (!record) return;
+
+  dayEl.appendChild(renderDots(record));
 }

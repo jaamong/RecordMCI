@@ -1,7 +1,5 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const now = new Date();
-  currentYear = now.getFullYear();
-  currentMonth = now.getMonth() + 1;
+import { renderCalendar } from "./calendar.js";
 
+document.addEventListener("DOMContentLoaded", () => {
   renderCalendar("calendar-area");
 });

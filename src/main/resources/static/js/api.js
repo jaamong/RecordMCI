@@ -43,3 +43,47 @@ async function saveWalkDetail(activityId, detail) {
     body: JSON.stringify(detail),
   });
 }
+
+async function createFood(payload) {
+  const res = await fetch(`${BASE_URL}/api/foods`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) throw new Error("Food 생성 실패");
+
+  const json = await res.json();
+  return json.data;
+}
+
+async function createActivity(payload) {
+  const res = await fetch(`${BASE_URL}/api/activities`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) throw new Error("Activity 생성 실패");
+
+  const json = await res.json();
+  return json.data;
+}
+
+async function updateMemo(dailyRecordId, memo) {
+  const res = await fetch(
+    `${BASE_URL}/api/daily-records/${dailyRecordId}/memo`,
+    {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ memo }),
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("Memo 저장 실패");
+  }
+
+  const json = await res.json();
+  return json.data;
+}

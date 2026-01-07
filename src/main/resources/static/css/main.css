@@ -1,35 +1,44 @@
 /*
-=========================
-    전체 화면 크기 조절 영역
-=========================
+===================
+    전체 레이아웃
+===================
 */
+
 body {
   margin: 0;
-  height: 92vh; /* 필요하면 여기 수정 */
+  height: 92vh;
   background-color: #000;
   color: #f2f2f2;
-  font-family: Arial, sans-serif;
+  font-family: "Gowun Batang", "Merriweather", "Arimo", sans-serif;
+  font-style: normal;
 }
 
 .container {
   display: flex;
   height: 100%;
-  padding: 20px;
+  margin: 0 auto; /* 가운데 */
+  padding: 70px 300px; /* 좌우 여백 */
   box-sizing: border-box;
+
+  align-items: center;
 }
 
 .calendar-area {
   flex: 6;
-  margin-right: 20px;
+  margin-right: 23px;
 }
 
 .items-area {
   flex: 4;
-  border-left: 1px solid #333;
-  padding-left: 20px;
+  border-left: 2px dashed #3c3c3c;
+  padding-left: 25px;
 }
 
-/* ===== 캘린더 ===== */
+/*
+==============
+    캘린더
+==============
+*/
 .calendar-header {
   display: flex;
   justify-content: space-between;
@@ -62,8 +71,9 @@ body {
   gap: 6px;
 }
 
-.calendar-day,
-.empty-day {
+/* 날짜 셀 */
+.calendar-day {
+  position: relative; /* dot 기준 */
   height: 42px;
   display: flex;
   justify-content: center;
@@ -80,121 +90,196 @@ body {
 }
 
 .calendar-day.selected {
-  background-color: #fff;
-  border-radius: 25%;
-  color: #1e1e1e;
+  background-color: #1c1c1c;
+  border: none;
+  border-radius: 15px;
+  /* border-color: #39443e; */
+  color: #ffffff;
 }
 
-/* ===== 날짜 하단 점 ===== */
+/*
+===================
+    날짜 하단 점 
+===================
+*/
 .day-dots {
-  display: flex;
-  justify-content: center;
-  gap: 4px;
   position: absolute;
   bottom: 4px;
-}
-
-.day-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
-
-/* 점 색상: 연한 → 진한 순 */
-.dot-food {
-  background-color: #5f9b78;
-}
-
-.dot-activity {
-  background-color: #46855e;
-}
-
-.dot-memo {
-  background-color: #2f5d43;
-}
-
-.calendar-day .dots {
   display: flex;
-  justify-content: center;
-  gap: 4px;
-  margin-top: 4px;
+  gap: 3px;
 }
 
+/* 공통 dot */
 .calendar-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  margin: 2px 1px;
 }
 
-/* 날짜 박스 위치 기준 */
-.calendar-day {
-  position: relative;
+/* dot 색상은 CSS에서만 관리 */
+.calendar-dot.food {
+  background-color: #5f9b78;
 }
 
-/* ===== items checkbox ===== */
-/* 체크박스 기본 */
+.calendar-dot.activity {
+  background-color: #46855e;
+}
+
+.calendar-dot.memo {
+  background-color: #2f5d43;
+}
+
+/*
+===================
+    공통 UI 요소
+===================
+*/
+button {
+  font-family: "Gowun Batang", "Merriweather", "Arimo", sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  margin-left: 10px;
+  background: #46855e;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+textarea,
+.add-form input,
+.add-form select,
+.walk-inputs input {
+  font-family: "Gowun Batang", "Merriweather", "Arimo", sans-serif;
+  font-style: normal;
+  background-color: #1c1c1c;
+  color: #fff;
+  margin-right: 5px;
+  margin-top: 3px;
+  margin-bottom: 5px;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 5px;
+}
+
+.add-form input {
+  width: 100px;
+}
+
+textarea {
+  width: 300px;
+  height: 100px;
+}
+
+.walk-inputs input {
+  width: 50px;
+}
+
+/*
+=================
+    체크박스
+=================
+*/
 .checkbox {
-  width: 16px;
-  height: 16px;
-  border: 1px solid #ffffff;
+  width: 17px;
+  height: 17px;
+  background-color: #1c1c1c;
+  border: none;
   border-radius: 25%;
   margin-right: 8px;
   cursor: pointer;
-  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* 체크된 상태 */
+.checkbox:hover {
+  background-color: #2a2a2a;
+}
+
+.checkbox-icon {
+  font-size: 18px;
+  color: #ffffff;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
 .checkbox.checked {
   background-color: #46855e;
-  border-color: #46855e;
 }
 
-/* 체크 표시 */
 .checkbox.checked::after {
-  content: "✓";
   color: #ffffff;
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: bold;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
 }
 
-.walk-inputs input {
-  width: 80px;
-  margin-right: 6px;
-  background: #000;
-  color: #fff;
-  border: 1px solid #46855e;
-  border-radius: 10%;
+.checkbox.checked .checkbox-icon {
+  opacity: 1;
 }
 
-.walk-inputs button {
-  background: #46855e;
-  color: #fff;
-  border: none;
-  border-radius: 15%;
-  padding: 4px 10px;
+/*
+=================
+    items
+=================
+*/
+/* item 한 줄 */
+.item-row {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+}
+
+/* Section 날짜 */
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Section 제목 */
+.section-header {
+  display: flex;
+  align-items: center;
+  margin-top: 30px; /* 제목 간(top) 사이 */
+  margin-bottom: 7px;
+  padding-bottom: 1px; /* 제목과 border 선 사이 */
+  gap: 15px; /* 제목 ↔ + 버튼 */
+  border-bottom: 1px solid #1c1c1c;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* + 버튼 */
+.add-btn {
   cursor: pointer;
+  color: #e3e3e3;
+  user-select: none;
+
+  /* 클릭 영역 확보 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.walk-inputs button:disabled {
-  opacity: 0.6;
-  cursor: default;
+.add-btn.material-symbols-rounded {
+  font-size: 20px;
 }
 
-textarea {
-  background: #000;
-  color: #fff;
-  border: 1px solid #46855e;
+.add-btn:hover {
+  color: #8ac19f;
 }
 
-button {
-  background: #46855e;
-  color: #fff;
-  border: none;
-  border-radius: 15%;
-  padding: 4px 10px;
-  cursor: pointer;
+.add-btn:active {
+  transform: scale(0.96);
 }
