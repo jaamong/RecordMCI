@@ -74,10 +74,10 @@ function createActivityRow(activity) {
   const row = createItemRow({
     checked: activity.completed,
     label: activity.name,
-    onToggle: async (e) => {
+    onToggle: async (nextChecked) => {
       const updated = await updateActivityCompleted(activity.id);
       activity.completed = updated.completed;
-      e.target.classList.toggle("checked", updated.completed);
+
       updateCalendarDot("activity", updated.completed);
 
       // walk 전용 분기

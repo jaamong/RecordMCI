@@ -204,7 +204,7 @@ textarea {
   background-color: #2a2a2a;
 }
 
-.checkbox-icon {
+.checkbox-icon.material-symbols-rounded {
   font-size: 18px;
   color: #ffffff;
   opacity: 0;
@@ -213,16 +213,6 @@ textarea {
 
 .checkbox.checked {
   background-color: #46855e;
-}
-
-.checkbox.checked::after {
-  color: #ffffff;
-  font-size: 11px;
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
 }
 
 .checkbox.checked .checkbox-icon {

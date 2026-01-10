@@ -33,12 +33,23 @@ export function createItemRow({ checked, label, onToggle }) {
   const checkbox = document.createElement("div");
   checkbox.className = "checkbox";
   checkbox.classList.toggle("checked", checked);
-  checkbox.onclick = onToggle;
 
   const icon = document.createElement("span");
   icon.className = "material-symbols-rounded checkbox-icon";
   icon.textContent = "check_small";
   checkbox.appendChild(icon);
+
+  checkbox.addEventListener("click", () => {
+    const nextChecked = !checkbox.classList.contains("checked");
+
+    // UI 반영
+    checkbox.classList.toggle("checked", nextChecked);
+
+    // 외부에 상태 변경 알림 (API 호출 등)
+    if (onToggle) {
+      onToggle(nextChecked);
+    }
+  });
 
   const text = document.createElement("span");
   text.textContent = label;

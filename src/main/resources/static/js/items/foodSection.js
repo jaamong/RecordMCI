@@ -36,10 +36,10 @@ function createFoodRow(food) {
   return createItemRow({
     checked: food.consumed,
     label: food.name,
-    onToggle: async (e) => {
+    onToggle: async (nextChecked) => {
       const updated = await updateFoodConsumed(food.id);
       food.consumed = updated.consumed;
-      e.target.classList.toggle("checked", updated.consumed);
+
       updateCalendarDot("food", updated.consumed);
     },
   });
