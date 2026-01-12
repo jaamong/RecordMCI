@@ -26,7 +26,6 @@ public class DailyRecordRepository {
         return dailyRecordJpaRepository
                 .findById(id)
                 .orElseThrow(() -> new CustomRuntimeException(ErrorCode.NOT_FOUND_RECORD));
-
     }
 
     public Optional<DailyRecord> findTodayByUserId(Long userId) {
