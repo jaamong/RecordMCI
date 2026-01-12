@@ -13,13 +13,15 @@ public interface DailyRecordJpaRepository extends JpaRepository<DailyRecordEntit
 
     @Query("select dre from DailyRecordEntity dre " +
             "where dre.userEntity.id = :id AND " +
-            "dre.date = :date")
+            "dre.recordDate = :recordDate")
     Optional<DailyRecordEntity> findDateByUserId(@Param("id") Long userId,
-                                                 @Param("date") LocalDate date);
+                                                 @Param("recordDate") LocalDate date);
 
     @Query("select dre from DailyRecordEntity dre " +
+            "left join fetch dre.foodEntityList " +  // fetch join으로 XToMany 연관되어 있는 엔티티는 1개만 가능. 그 이상은 -> MultipleBagFetchException.
+//            "left join fetch dre.activityEntityList " +  // fetch join으로 최대한 성능 보장 후 batch_fetch_size 적용
             "where dre.userEntity.id = :id and " +
-            "dre.date between :startOfMonth and :endOfMonth")
+            "dre.recordDate between :startOfMonth and :endOfMonth")
     List<DailyRecordEntity> findMonthByUserIdAndYearMonth(@Param("id") Long userId,
                                                           @Param("startOfMonth") LocalDate startOfMonth,
                                                           @Param("endOfMonth") LocalDate endOfMonth);
