@@ -1,0 +1,1 @@
+INSERT OR IGNORE INTO USERS(users_id, username, password) VALUES(1, 'tester1', 'testerpw');
