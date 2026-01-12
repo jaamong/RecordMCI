@@ -125,20 +125,15 @@ export async function renderCalendar(containerId) {
       dayEl.appendChild(renderDots(record));
     }
 
-    // 오늘 자동 선택
-    if (
-      currentYear === todayYear &&
-      currentMonth === todayMonth &&
-      d === todayDate
-    ) {
-      dayEl.classList.add("selected");
-      selectDate(todayDate);
-    }
-
     daysGrid.appendChild(dayEl);
   }
 
   container.append(header, weekdays, daysGrid);
+
+  // 최초 1회만 오늘 선택
+  if (!selectedDate) {
+    selectDate(todayDate);
+  }
 }
 
 /* ===== 날짜 선택 ===== */
@@ -208,7 +203,14 @@ function renderDots(record) {
 }
 
 export function updateCalendarDot(type, enabled) {
-  if (!monthlyMap[selectedDate]) return;
+  if (!monthlyMap[selectedDate]) {
+    // 새 날짜에 대한 기본 엔트리 생성
+    monthlyMap[selectedDate] = {
+      hasFoodConsumed: false,
+      hasActivityCompleted: false,
+      hasMemo: false,
+    };
+  }
 
   switch (type) {
     case "food":

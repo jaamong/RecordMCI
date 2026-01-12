@@ -15,7 +15,7 @@ export function createFoodSection(record) {
         onSuccess: (food) => {
           record.foods.push(food);
           section.appendChild(createFoodRow(food));
-          updateCalendarDot("food", true);
+          updateCalendarDot("food", false);
           form.remove();
         },
         onCancel: () => form.remove(),
@@ -26,13 +26,13 @@ export function createFoodSection(record) {
   );
 
   record.foods.forEach((food) => {
-    section.appendChild(createFoodRow(food));
+    section.appendChild(createFoodRow(food, record));
   });
 
   return section;
 }
 
-function createFoodRow(food) {
+function createFoodRow(food, record) {
   return createItemRow({
     checked: food.consumed,
     label: food.name,
@@ -40,7 +40,8 @@ function createFoodRow(food) {
       const updated = await updateFoodConsumed(food.id);
       food.consumed = updated.consumed;
 
-      updateCalendarDot("food", updated.consumed);
+      const anyConsumed = record.foods.some((f) => f.consumed);
+      updateCalendarDot("food", anyConsumed);
     },
   });
 }

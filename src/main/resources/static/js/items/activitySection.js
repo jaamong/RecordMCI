@@ -2,7 +2,7 @@ import { createSectionHeader, createItemRow } from "./itemComponents.js";
 import { createActivityForm } from "./itemForms.js";
 import { updateCalendarDot } from "../calendar.js";
 
-/* walk 입력 UI 생성 (기존 로직 복원) */
+/* walk 입력 UI 생성 */
 function createWalkInputs(activity) {
   const wrapper = document.createElement("div");
   wrapper.className = "walk-inputs";
@@ -27,9 +27,9 @@ function createWalkInputs(activity) {
 
   saveBtn.onclick = async () => {
     await saveWalkDetail(activity.id, {
-      step: Number(steps.value),
-      hour: Number(hours.value),
-      minutes: Number(minutes.value),
+      totalSteps: Number(steps.value),
+      totalHours: Number(hours.value),
+      totalMinutes: Number(minutes.value),
     });
   };
 
@@ -61,13 +61,13 @@ export function createActivitySection(record) {
   );
 
   record.activities.forEach((activity) => {
-    section.appendChild(createActivityRow(activity));
+    section.appendChild(createActivityRow(activity, record));
   });
 
   return section;
 }
 
-function createActivityRow(activity) {
+function createActivityRow(activity, record) {
   const wrapper = document.createElement("div");
   wrapper.className = "activity-wrapper";
 
@@ -78,7 +78,8 @@ function createActivityRow(activity) {
       const updated = await updateActivityCompleted(activity.id);
       activity.completed = updated.completed;
 
-      updateCalendarDot("activity", updated.completed);
+      const anyCompleted = record.activities.some((a) => a.completed);
+      updateCalendarDot("activity", anyCompleted);
 
       // walk 전용 분기
       if (isWalkActivity(activity)) {
