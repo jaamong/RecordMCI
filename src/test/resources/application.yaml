@@ -1,0 +1,24 @@
+spring:
+  application.name: recordMCI
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:recordmci
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+        highlight_sql: true
+
+  sql:
+    init.mode: never
+
+logging.level:
+  org.hibernate:
+    SQL: debug
+    orm.jdbc.bind: trace
