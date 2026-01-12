@@ -62,7 +62,7 @@ public class DailyRecordService {
      * @return DailyRecord 상세 조회 DTO
      */
     public DailyRecordGetDetailResponse getDayBy(Long userId, LocalDate date) {
-        log.info("[DailyRecordService] getDayBy :: start : id={}, date={}", userId, date);
+        log.info("[DailyRecordService] getDayBy :: start : id={}, recordDate={}", userId, date);
 
         DailyRecord dailyRecord = dailyRecordRepository
                 .findDayBy(userId, date)
@@ -81,13 +81,15 @@ public class DailyRecordService {
      * @return 일별 DailyRecord 항목 별 상태를 담은 리스트
      */
     public List<DailyRecordGetMonthResponse> getMonthlyBy(Long userId, Integer year, Integer month) {
+        log.info("[DailyRecordService] getMonthlyBy :: start");
+
         // 1. Fetch existing records from DB for this month
         List<DailyRecord> existingRecords = dailyRecordRepository.getMonthBy(userId, year, month);
 
-        // 2. Create map for date -> record: Map(date, record)
+        // 2. Create map for recordDate -> record: Map(recordDate, record)
         Map<LocalDate, DailyRecord> recordMap = existingRecords.stream()
                 .collect(Collectors.toMap(
-                        DailyRecord::date, r -> r)
+                        DailyRecord::recordDate, r -> r)
                 );
 
         // 3. Generate all days in the month
@@ -101,6 +103,7 @@ public class DailyRecordService {
             days.add(buildMonthResponse(date, record));
         }
 
+        log.info("[DailyRecordService] getMonthlyBy :: finish (before returning)");
         return days;
     }
 
@@ -130,7 +133,7 @@ public class DailyRecordService {
 
         DailyRecordEntity dailyRecordEntity = DailyRecordEntity.builder()
                 .userEntity(user)
-                .date(date)
+                .recordDate(date)
                 .build();
 
         dailyRecordEntity = dailyRecordRepository.save(dailyRecordEntity);
