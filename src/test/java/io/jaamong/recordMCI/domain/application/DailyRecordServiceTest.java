@@ -139,7 +139,7 @@ class DailyRecordServiceTest {
 
     private void createDailyRecord(LocalDate targetDate, UserEntity user) {
         DailyRecordEntity dailyRecordEntity = DailyRecordEntity.builder()
-                .date(targetDate)
+                .recordDate(targetDate)
                 .userEntity(user)
                 .build();
 

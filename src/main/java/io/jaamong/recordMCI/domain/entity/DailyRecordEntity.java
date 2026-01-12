@@ -23,7 +23,7 @@ public class DailyRecordEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDate date;  // The date for this record
+    private LocalDate recordDate;  // The recordDate for this record
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id")
@@ -39,15 +39,15 @@ public class DailyRecordEntity extends BaseEntity {
     private String memo;  // Memo text (max 1000 chars)
 
     @Builder
-    public DailyRecordEntity(LocalDate date, UserEntity userEntity) {
-        this.date = date;
+    public DailyRecordEntity(LocalDate recordDate, UserEntity userEntity) {
+        this.recordDate = recordDate;
         this.userEntity = userEntity;
     }
 
     public DailyRecord toModel() {
         return DailyRecord.builder()
                 .id(id)
-                .date(date)
+                .recordDate(recordDate)
                 .user(userEntity.toModel())
                 .foods(foodsFrom(foodEntityList))
                 .activities(activitiesFrom(activityEntityList))

@@ -58,7 +58,7 @@ class DailyRecordRepositoryTest {
         assertThat(result.isPresent()).isTrue();
         DailyRecord dailyRecord = result.get();
         assertThat(dailyRecord.user()).isNotNull();
-        assertThat(dailyRecord.date()).isEqualTo(now);
+        assertThat(dailyRecord.recordDate()).isEqualTo(now);
     }
 
     @DisplayName("오늘이 아닌 특정 날짜의 DailyRecord 객체를 조회한다.")
@@ -74,7 +74,7 @@ class DailyRecordRepositoryTest {
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.date()).isEqualTo(targetDate);
+        assertThat(result.recordDate()).isEqualTo(targetDate);
     }
 
     @DisplayName("특정 날짜의 DailyRecord 객체 조회를 실패하면 NOT FOUND 예외가 발생한다.")
@@ -116,7 +116,7 @@ class DailyRecordRepositoryTest {
 
     private DailyRecordEntity createDailyRecord(LocalDate targetDate, UserEntity user) {
         DailyRecordEntity dailyRecordEntity = DailyRecordEntity.builder()
-                .date(targetDate)
+                .recordDate(targetDate)
                 .userEntity(user)
                 .build();
 

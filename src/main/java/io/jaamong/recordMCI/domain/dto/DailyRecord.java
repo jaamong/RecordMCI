@@ -7,7 +7,7 @@ import java.util.List;
 
 public record DailyRecord(
         Long id,
-        LocalDate date,
+        LocalDate recordDate,
         Users user,
         List<Food> foods,
         List<Activity> activities,
