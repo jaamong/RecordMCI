@@ -49,7 +49,7 @@ export function createActivitySection(record) {
         dailyRecordId: record.id,
         onSuccess: (activity) => {
           record.activities.push(activity);
-          section.appendChild(createActivityRow(activity));
+          section.appendChild(createActivityRow(activity, record));
           updateCalendarDot("activity", false);
           form.remove();
         },

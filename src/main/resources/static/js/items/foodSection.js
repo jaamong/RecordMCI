@@ -14,7 +14,7 @@ export function createFoodSection(record) {
         dailyRecordId: record.id,
         onSuccess: (food) => {
           record.foods.push(food);
-          section.appendChild(createFoodRow(food));
+          section.appendChild(createFoodRow(food, record));
           updateCalendarDot("food", false);
           form.remove();
         },
