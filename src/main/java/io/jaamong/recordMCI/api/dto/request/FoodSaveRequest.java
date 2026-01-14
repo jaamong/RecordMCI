@@ -21,7 +21,7 @@ public record FoodSaveRequest(
         return FoodSaveServiceRequest.builder()
                 .dailyRecordId(this.dailyRecordId)
                 .name(this.name)
-                .nutrientType(NutrientType.of(this.nutrientType))
+                .nutrientType(NutrientType.valueOf(this.nutrientType))
                 .build();
     }
 }

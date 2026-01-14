@@ -18,10 +18,4 @@ public enum NutrientType {
 
     final private String type;
 
-    public static NutrientType of(String type) {
-        return Arrays.stream(NutrientType.values())
-                .filter(n -> n.getType().equals(type))
-                .findFirst()
-                .orElseThrow(() -> new CustomRuntimeException(ErrorCode.INVALID_NUTRIENT_TYPE));
-    }
 }
