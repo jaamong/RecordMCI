@@ -46,9 +46,12 @@ body {
   margin-bottom: 12px;
 }
 
-.nav {
+.chevron_backward.material-symbols-rounded,
+.chevron_forward.material-symbols-rounded {
   cursor: pointer;
-  font-size: 18px;
+  font-size: 24px;
+  color: #ffffff;
+  opacity: 1;
 }
 
 .month-title {
@@ -175,6 +178,24 @@ textarea,
 textarea {
   width: 300px;
   height: 100px;
+}
+
+/*
+===================
+    메모 글자수 카운터
+===================
+*/
+.memo-textarea-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.memo-char-counter {
+  position: absolute;
+  bottom: 15px;
+  right: 10px;
+  font-size: 9pt;
+  color: #888;
 }
 
 .walk-inputs input {
