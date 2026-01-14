@@ -7,9 +7,9 @@ export function createFoodForm({ dailyRecordId, onSuccess, onCancel }) {
 
   const select = document.createElement("select");
   [
-    { label: "탄수화물", value: "CARBO" },
-    { label: "채소", value: "VEGETABLE" },
-    { label: "과일", value: "FRUIT" },
+    { label: "탄수화물", value: "CARBOHYDRATES" },
+    { label: "채소", value: "CARBO_VEGETABLE" },
+    { label: "과일", value: "CARBO_FRUIT" },
     { label: "단백질", value: "PROTEIN" },
     { label: "지방", value: "FAT" },
   ].forEach(({ label, value }) => {
@@ -29,6 +29,7 @@ export function createFoodForm({ dailyRecordId, onSuccess, onCancel }) {
     const name = input.value.trim();
     if (!name) return alert("음식 이름 입력");
 
+    console.log("nutrient type: ", select.value);
     const food = await createFood({
       dailyRecordId,
       name,
