@@ -68,8 +68,8 @@ export async function renderCalendar(containerId) {
   header.className = "calendar-header";
 
   const prev = document.createElement("span");
-  prev.className = "nav";
-  prev.textContent = "<";
+  prev.className = "material-symbols-rounded chevron_backward";
+  prev.textContent = "chevron_backward";
   prev.onclick = () => moveMonth(-1);
 
   const title = document.createElement("span");
@@ -77,8 +77,8 @@ export async function renderCalendar(containerId) {
   title.textContent = `${currentYear}년 ${currentMonth}월`;
 
   const next = document.createElement("span");
-  next.className = "nav";
-  next.textContent = ">";
+  next.className = "material-symbols-rounded chevron_forward";
+  next.textContent = "chevron_forward";
   next.onclick = () => moveMonth(1);
 
   header.append(prev, title, next);
