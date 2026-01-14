@@ -1,6 +1,8 @@
 spring:
   application.name: recordMCI
 
+  mvc.static-path-pattern: "/static/**"
+
 logging.level:
   org.hibernate:
     SQL: debug
