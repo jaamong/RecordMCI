@@ -32,4 +32,8 @@ public class FoodRepository {
         return foodJpaRepository.findById(id)
                 .orElseThrow(() -> new CustomRuntimeException(ErrorCode.NOT_FOUND_FOOD));
     }
+
+    public void deleteById(Long id) {
+        foodJpaRepository.deleteById(id);
+    }
 }

@@ -64,6 +64,10 @@ public class FoodEntity extends BaseEntity {
         this.consumed = !this.consumed;
     }
 
+    public void updateName(String name) {
+        this.name = name;
+    }
+
     public Food toModel() {
         return Food.builder()
                 .id(id)

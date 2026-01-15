@@ -1,5 +1,6 @@
 package io.jaamong.recordMCI.domain.application;
 
+import io.jaamong.recordMCI.api.dto.request.FoodNameUpdateServiceRequest;
 import io.jaamong.recordMCI.api.dto.request.FoodSaveServiceRequest;
 import io.jaamong.recordMCI.domain.dto.Food;
 import io.jaamong.recordMCI.domain.entity.DailyRecordEntity;
@@ -31,6 +32,7 @@ public class FoodService {
      * - nuts : 견과류
      * - yogurt : 요거트
      * - blueberry : 블루베리
+     *
      * @return Food 리스트
      */
     @Transactional
@@ -77,5 +79,17 @@ public class FoodService {
         FoodEntity foodEntity = foodRepository.findById(id);
         foodEntity.invertConsumed();
         return foodEntity.toModel();
+    }
+
+    @Transactional
+    public Food updateName(FoodNameUpdateServiceRequest request) {
+        FoodEntity foodEntity = foodRepository.findById(request.id());
+        foodEntity.updateName(request.name());
+        return foodEntity.toModel();
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        foodRepository.deleteById(id);
     }
 }
