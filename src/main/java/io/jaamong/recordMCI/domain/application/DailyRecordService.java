@@ -1,6 +1,6 @@
 package io.jaamong.recordMCI.domain.application;
 
-import io.jaamong.recordMCI.api.dto.request.DailyRecordMemoUpdateServiceRequest;
+import io.jaamong.recordMCI.api.dto.request.dailyrecord.DailyRecordMemoUpdateServiceRequest;
 import io.jaamong.recordMCI.api.dto.response.DailyRecordGetDetailResponse;
 import io.jaamong.recordMCI.api.dto.response.DailyRecordGetMonthResponse;
 import io.jaamong.recordMCI.domain.dto.Activity;

@@ -1,4 +1,4 @@
-package io.jaamong.recordMCI.api.dto.request;
+package io.jaamong.recordMCI.api.dto.request.dailyrecord;
 
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
