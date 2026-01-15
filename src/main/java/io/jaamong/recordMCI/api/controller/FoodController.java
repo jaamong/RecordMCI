@@ -1,8 +1,8 @@
 package io.jaamong.recordMCI.api.controller;
 
 import io.jaamong.recordMCI.api.ApiResponse;
-import io.jaamong.recordMCI.api.dto.request.FoodNameUpdateRequest;
-import io.jaamong.recordMCI.api.dto.request.FoodSaveRequest;
+import io.jaamong.recordMCI.api.dto.request.food.FoodNameUpdateRequest;
+import io.jaamong.recordMCI.api.dto.request.food.FoodSaveRequest;
 import io.jaamong.recordMCI.domain.application.FoodService;
 import io.jaamong.recordMCI.domain.dto.Food;
 import jakarta.validation.Valid;

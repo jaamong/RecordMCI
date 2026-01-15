@@ -1,4 +1,4 @@
-package io.jaamong.recordMCI.api.dto.request;
+package io.jaamong.recordMCI.api.dto.request.food;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

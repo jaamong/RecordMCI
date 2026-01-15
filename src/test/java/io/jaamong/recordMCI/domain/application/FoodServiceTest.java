@@ -1,7 +1,7 @@
 package io.jaamong.recordMCI.domain.application;
 
-import io.jaamong.recordMCI.api.dto.request.FoodNameUpdateServiceRequest;
-import io.jaamong.recordMCI.api.dto.request.FoodSaveRequest;
+import io.jaamong.recordMCI.api.dto.request.food.FoodNameUpdateServiceRequest;
+import io.jaamong.recordMCI.api.dto.request.food.FoodSaveRequest;
 import io.jaamong.recordMCI.domain.dto.Food;
 import io.jaamong.recordMCI.domain.entity.NutrientType;
 import io.jaamong.recordMCI.domain.entity.UserEntity;
