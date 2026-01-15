@@ -1,5 +1,6 @@
 package io.jaamong.recordMCI.domain.application;
 
+import io.jaamong.recordMCI.api.dto.request.FoodNameUpdateServiceRequest;
 import io.jaamong.recordMCI.api.dto.request.FoodSaveRequest;
 import io.jaamong.recordMCI.domain.dto.Food;
 import io.jaamong.recordMCI.domain.entity.NutrientType;
@@ -65,6 +66,41 @@ class FoodServiceTest {
 
         // then
         assertThat(consumedFood.consumed()).isTrue();
+    }
+
+    @DisplayName("FoodEntity의 name 필드를 변경할 수 있다.")
+    @Test
+    void updateName() {
+        // given
+        UserEntity userEntity = createUser();
+        var todayDailyRecord = dailyRecordService.getTodayBy(userEntity.getId());
+
+        Food food = todayDailyRecord.foods().get(1);
+        var request = new FoodNameUpdateServiceRequest(food.id(), "update");
+
+        // when
+        Food updatedFood = foodService.updateName(request);
+
+        // then
+        assertThat(updatedFood.name()).isEqualTo(request.name());
+    }
+
+    @DisplayName("FoodEntity를 삭제할 수 있다.")
+    @Test
+    void delete() {
+        // given
+        UserEntity userEntity = createUser();
+        var todayDailyRecord = dailyRecordService.getTodayBy(userEntity.getId());
+        int initFoodsSize = todayDailyRecord.foods().size();
+
+        Food food = todayDailyRecord.foods().get(1);
+
+        // when
+        foodService.delete(food.id());
+
+        // then
+        var result = dailyRecordService.getTodayBy(userEntity.getId());
+        assertThat(result.foods().size()).isEqualTo(initFoodsSize - 1);
     }
 
     private UserEntity createUser() {
