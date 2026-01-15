@@ -1,4 +1,4 @@
-package io.jaamong.recordMCI.api.dto.request;
+package io.jaamong.recordMCI.api.dto.request.activity;
 
 import jakarta.validation.constraints.Min;
 import lombok.Builder;

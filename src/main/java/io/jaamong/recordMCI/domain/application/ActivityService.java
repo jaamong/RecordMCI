@@ -1,7 +1,7 @@
 package io.jaamong.recordMCI.domain.application;
 
-import io.jaamong.recordMCI.api.dto.request.ActivitySaveServiceRequest;
-import io.jaamong.recordMCI.api.dto.request.ActivityWalkUpdateServiceRequest;
+import io.jaamong.recordMCI.api.dto.request.activity.ActivitySaveServiceRequest;
+import io.jaamong.recordMCI.api.dto.request.activity.ActivityWalkUpdateServiceRequest;
 import io.jaamong.recordMCI.domain.dto.Activity;
 import io.jaamong.recordMCI.domain.entity.ActivityEntity;
 import io.jaamong.recordMCI.domain.entity.ActivityInitialType;

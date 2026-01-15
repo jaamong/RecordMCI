@@ -1,8 +1,8 @@
 package io.jaamong.recordMCI.api.controller;
 
 import io.jaamong.recordMCI.api.ApiResponse;
-import io.jaamong.recordMCI.api.dto.request.ActivitySaveRequest;
-import io.jaamong.recordMCI.api.dto.request.ActivityWalkUpdateRequest;
+import io.jaamong.recordMCI.api.dto.request.activity.ActivitySaveRequest;
+import io.jaamong.recordMCI.api.dto.request.activity.ActivityWalkUpdateRequest;
 import io.jaamong.recordMCI.domain.application.ActivityService;
 import io.jaamong.recordMCI.domain.dto.Activity;
 import jakarta.validation.Valid;

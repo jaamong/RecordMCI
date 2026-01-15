@@ -1,7 +1,7 @@
 package io.jaamong.recordMCI.domain.application;
 
-import io.jaamong.recordMCI.api.dto.request.ActivitySaveRequest;
-import io.jaamong.recordMCI.api.dto.request.ActivityWalkUpdateServiceRequest;
+import io.jaamong.recordMCI.api.dto.request.activity.ActivitySaveRequest;
+import io.jaamong.recordMCI.api.dto.request.activity.ActivityWalkUpdateServiceRequest;
 import io.jaamong.recordMCI.api.dto.response.DailyRecordGetDetailResponse;
 import io.jaamong.recordMCI.api.exception.CustomRuntimeException;
 import io.jaamong.recordMCI.api.exception.ErrorCode;
