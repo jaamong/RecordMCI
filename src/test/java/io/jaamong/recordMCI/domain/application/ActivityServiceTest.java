@@ -130,6 +130,24 @@ class ActivityServiceTest {
         assertThat(updateActivity.name()).isEqualTo(request.name());
     }
 
+    @DisplayName("ActivityEntity를 삭제할 수 있다.")
+    @Test
+    void delete() {
+        // given
+        UserEntity userEntity = createUser();
+        var dailyRecord = dailyRecordService.getTodayBy(userEntity.getId());
+        int initActivitiesSize = dailyRecord.activities().size();
+
+        Activity activity = dailyRecord.activities().get(1);
+
+        // when
+        activityService.delete(activity.id());
+
+        // then
+        var result = dailyRecordService.getTodayBy(userEntity.getId());
+        assertThat(result.activities().size()).isEqualTo(initActivitiesSize - 1);
+    }
+
     private UserEntity createUser() {
         UserEntity user = new UserEntity("test1", "password1");
         return usersJpaRepository.save(user);
