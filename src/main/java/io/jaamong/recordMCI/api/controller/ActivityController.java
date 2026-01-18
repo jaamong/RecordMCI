@@ -3,6 +3,7 @@ package io.jaamong.recordMCI.api.controller;
 import io.jaamong.recordMCI.api.ApiResponse;
 import io.jaamong.recordMCI.api.dto.request.activity.ActivitySaveRequest;
 import io.jaamong.recordMCI.api.dto.request.activity.ActivityWalkUpdateRequest;
+import io.jaamong.recordMCI.api.dto.request.activity.ActivityNameUpdateRequest;
 import io.jaamong.recordMCI.domain.application.ActivityService;
 import io.jaamong.recordMCI.domain.dto.Activity;
 import jakarta.validation.Valid;
@@ -37,6 +38,19 @@ public class ActivityController {
     @PutMapping("/{id}/walk-detail")
     public ApiResponse<Activity> registerWalkDetail(@PathVariable("id") Long id, @RequestBody @Valid ActivityWalkUpdateRequest request) {
         Activity activity = activityService.updateWalkDetail(request.toServiceRequest(id));
+        return ApiResponse.ok(activity);
+    }
+
+    /**
+     * 단일 활동 아이템의 이름 수정
+     *
+     * @param request
+     * @return
+     */
+    @PutMapping("/{id}/name")
+    public ApiResponse<Activity> rename(@PathVariable("id") Long id,
+                                        @RequestBody @Valid ActivityNameUpdateRequest request) {
+        Activity activity = activityService.updateName(request.toServiceRequest(id));
         return ApiResponse.ok(activity);
     }
 

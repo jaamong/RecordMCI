@@ -1,5 +1,6 @@
 package io.jaamong.recordMCI.domain.application;
 
+import io.jaamong.recordMCI.api.dto.request.activity.ActivityNameUpdateServiceRequest;
 import io.jaamong.recordMCI.api.dto.request.activity.ActivitySaveRequest;
 import io.jaamong.recordMCI.api.dto.request.activity.ActivityWalkUpdateServiceRequest;
 import io.jaamong.recordMCI.api.dto.response.DailyRecordGetDetailResponse;
@@ -112,6 +113,21 @@ class ActivityServiceTest {
         assertThatThrownBy(() -> activityService.updateWalkDetail(request))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ErrorCode.INVALID_ACTIVITY_WALK_UPDATE_REQUEST.getMessage());
+    }
+
+    @DisplayName("ActivityEntity의 name 필드를 변경할 수 있다")
+    @Test
+    void updateName() {
+        // given
+        UserEntity userEntity = createUser();
+        var dailyRecord = dailyRecordService.getTodayBy(userEntity.getId());
+        var request = new ActivityNameUpdateServiceRequest(dailyRecord.id(), "update");
+
+        // when
+        Activity updateActivity = activityService.updateName(request);
+
+        // then
+        assertThat(updateActivity.name()).isEqualTo(request.name());
     }
 
     private UserEntity createUser() {

@@ -100,4 +100,8 @@ public class ActivityEntity extends BaseEntity {
                 ", totalMinutes=" + totalMinutes +
                 '}';
     }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
 }

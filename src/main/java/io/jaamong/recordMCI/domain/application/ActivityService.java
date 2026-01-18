@@ -1,5 +1,6 @@
 package io.jaamong.recordMCI.domain.application;
 
+import io.jaamong.recordMCI.api.dto.request.activity.ActivityNameUpdateServiceRequest;
 import io.jaamong.recordMCI.api.dto.request.activity.ActivitySaveServiceRequest;
 import io.jaamong.recordMCI.api.dto.request.activity.ActivityWalkUpdateServiceRequest;
 import io.jaamong.recordMCI.domain.dto.Activity;
@@ -77,5 +78,12 @@ public class ActivityService {
                 request.totalMinutes()
         );
         return activityEntity.toModel();
+    }
+
+    @Transactional
+    public Activity updateName(ActivityNameUpdateServiceRequest request) {
+        ActivityEntity activity = activityRepository.findById(request.id());
+        activity.updateName(request.name());
+        return activity.toModel();
     }
 }
