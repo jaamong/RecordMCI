@@ -47,8 +47,8 @@ public class FoodController {
     /**
      * 새로운 식품 추가
      *
-     * @param request
-     * @return
+     * @param `DailyRecordEntity` DB index, 식품 이름, 식품 유형(NutrientType.name() -> e.g., PROTEIN, FAT, ...
+     * @return Food 객체와 성공 응답
      */
     @PostMapping
     public ApiResponse<Food> add(@Valid @RequestBody FoodSaveRequest request) {

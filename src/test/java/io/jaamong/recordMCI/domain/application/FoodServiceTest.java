@@ -40,7 +40,7 @@ class FoodServiceTest {
         FoodSaveRequest request = FoodSaveRequest.builder()
                 .dailyRecordId(recordGetDetailResponse.id())
                 .name(name)
-                .nutrientType(nutrientType.getType())
+                .nutrientType(nutrientType.name())
                 .build();
 
         // when
