@@ -36,7 +36,8 @@ public class ActivityController {
      * @return Activity 객체와 성공 응답
      */
     @PutMapping("/{id}/walk-detail")
-    public ApiResponse<Activity> registerWalkDetail(@PathVariable("id") Long id, @RequestBody @Valid ActivityWalkUpdateRequest request) {
+    public ApiResponse<Activity> registerWalkDetail(@PathVariable("id") Long id,
+                                                    @RequestBody @Valid ActivityWalkUpdateRequest request) {
         Activity activity = activityService.updateWalkDetail(request.toServiceRequest(id));
         return ApiResponse.ok(activity);
     }
