@@ -45,8 +45,8 @@ public class ActivityController {
     /**
      * 단일 활동 아이템의 이름 수정
      *
-     * @param request
-     * @return
+     * @param `ActivityEntity` DB index, 변경 후 이름 (name after updating)
+     * @return Activity 객체와 성공 응답
      */
     @PutMapping("/{id}/name")
     public ApiResponse<Activity> rename(@PathVariable("id") Long id,
@@ -58,8 +58,8 @@ public class ActivityController {
     /**
      * 새로운 Activity 추가
      *
-     * @param request
-     * @return
+     * @param `DailyRecordEntity` DB index, 활동 이름
+     * @return Activity 객체와 성공 응답
      */
     @PostMapping
     public ApiResponse<Activity> add(@RequestBody @Valid ActivitySaveRequest request) {
