@@ -87,3 +87,49 @@ async function updateMemo(dailyRecordId, memo) {
   const json = await res.json();
   return json.data;
 }
+
+/* Activity 이름 수정 */
+async function updateActivityName(activityId, name) {
+  const res = await fetch(`${BASE_URL}/api/activities/${activityId}/name`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name }),
+  });
+
+  if (!res.ok) throw new Error("Activity 이름 수정 실패");
+
+  const json = await res.json();
+  return json.data;
+}
+
+/* Activity 삭제 */
+async function deleteActivity(activityId) {
+  const res = await fetch(`${BASE_URL}/api/activities/${activityId}`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) throw new Error("Activity 삭제 실패");
+}
+
+/* Food 이름 수정 */
+async function updateFoodName(foodId, name) {
+  const res = await fetch(`${BASE_URL}/api/foods/${foodId}/name`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name }),
+  });
+
+  if (!res.ok) throw new Error("Food 이름 수정 실패");
+
+  const json = await res.json();
+  return json.data;
+}
+
+/* Food 삭제 */
+async function deleteFood(foodId) {
+  const res = await fetch(`${BASE_URL}/api/foods/${foodId}`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) throw new Error("Food 삭제 실패");
+}

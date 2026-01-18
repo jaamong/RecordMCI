@@ -27,14 +27,20 @@ export function createMemoSection(record) {
 
   textareaWrapper.append(charCounter, textarea);
 
+  /* 기존 데이터 유무에 따라 버튼 텍스트 결정 */
+  const hasData = record.memo && record.memo.trim().length > 0;
   const save = document.createElement("button");
-  save.textContent = "저장";
+  save.textContent = hasData ? "수정" : "저장";
 
   save.onclick = async () => {
     const value = textarea.value.trim();
     const saved = await updateMemo(record.id, value);
     textarea.value = saved;
     updateCalendarDot("memo", value.length > 0);
+
+    /* 저장 성공 시 Toast 표시 및 버튼 텍스트 변경 */
+    showToast("저장되었습니다");
+    save.textContent = "수정";
   };
 
   section.append(textareaWrapper, save);

@@ -22,8 +22,10 @@ function createWalkInputs(activity) {
   minutes.placeholder = "분";
   minutes.value = activity.totalMinutes ?? "";
 
+  /* 기존 데이터 유무에 따라 버튼 텍스트 결정 */
+  const hasData = activity.totalSteps || activity.totalHours || activity.totalMinutes;
   const saveBtn = document.createElement("button");
-  saveBtn.textContent = "저장";
+  saveBtn.textContent = hasData ? "수정" : "저장";
 
   saveBtn.onclick = async () => {
     await saveWalkDetail(activity.id, {
@@ -31,6 +33,10 @@ function createWalkInputs(activity) {
       totalHours: Number(hours.value),
       totalMinutes: Number(minutes.value),
     });
+
+    /* 저장 성공 시 Toast 표시 및 버튼 텍스트 변경 */
+    showToast("저장되었습니다");
+    saveBtn.textContent = "수정";
   };
 
   wrapper.append(steps, hours, minutes, saveBtn);
@@ -84,6 +90,22 @@ function createActivityRow(activity, record) {
       // walk 전용 분기
       if (isWalkActivity(activity)) {
         toggleWalkInputs(wrapper, activity);
+      }
+    },
+    onEdit: async (newName) => {
+      const updated = await updateActivityName(activity.id, newName);
+      activity.name = updated.name;
+      row.querySelector(".item-label").textContent = updated.name;
+    },
+    onDelete: async () => {
+      if (confirm(`"${activity.name}" 항목을 삭제하시겠습니까?`)) {
+        await deleteActivity(activity.id);
+        const idx = record.activities.indexOf(activity);
+        if (idx > -1) record.activities.splice(idx, 1);
+        wrapper.remove();
+
+        const anyCompleted = record.activities.some((a) => a.completed);
+        updateCalendarDot("activity", anyCompleted);
       }
     },
   });

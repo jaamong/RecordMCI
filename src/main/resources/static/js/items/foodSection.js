@@ -33,15 +33,33 @@ export function createFoodSection(record) {
 }
 
 function createFoodRow(food, record) {
-  return createItemRow({
+  const row = createItemRow({
     checked: food.consumed,
     label: food.name,
-    onToggle: async (nextChecked) => {
+    onToggle: async () => {
       const updated = await updateFoodConsumed(food.id);
       food.consumed = updated.consumed;
 
       const anyConsumed = record.foods.some((f) => f.consumed);
       updateCalendarDot("food", anyConsumed);
     },
+    onEdit: async (newName) => {
+      const updated = await updateFoodName(food.id, newName);
+      food.name = updated.name;
+      row.querySelector(".item-label").textContent = updated.name;
+    },
+    onDelete: async () => {
+      if (confirm(`"${food.name}" 항목을 삭제하시겠습니까?`)) {
+        await deleteFood(food.id);
+        const idx = record.foods.indexOf(food);
+        if (idx > -1) record.foods.splice(idx, 1);
+        row.remove();
+
+        const anyConsumed = record.foods.some((f) => f.consumed);
+        updateCalendarDot("food", anyConsumed);
+      }
+    },
   });
+
+  return row;
 }
