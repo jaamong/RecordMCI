@@ -18,7 +18,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class FoodService {
 
@@ -35,7 +35,6 @@ public class FoodService {
      *
      * @return Food 리스트
      */
-    @Transactional
     public List<FoodEntity> initCreate(DailyRecordEntity dailyRecordEntity) {
         FoodEntity beans = FoodEntity.of(dailyRecordEntity, NutrientType.PROTEIN, "콩류");
         FoodEntity broccoli = FoodEntity.of(dailyRecordEntity, NutrientType.CARBO_VEGETABLE, "브로콜리");
@@ -62,7 +61,6 @@ public class FoodService {
      * @param request
      * @return
      */
-    @Transactional
     public Food create(FoodSaveServiceRequest request) {
         log.info("[FoodService] create :: start : request={}", request);
 
@@ -74,21 +72,18 @@ public class FoodService {
         return food;
     }
 
-    @Transactional
     public Food invertConsumed(Long id) {
         FoodEntity foodEntity = foodRepository.findById(id);
         foodEntity.invertConsumed();
         return foodEntity.toModel();
     }
 
-    @Transactional
     public Food updateName(FoodNameUpdateServiceRequest request) {
         FoodEntity foodEntity = foodRepository.findById(request.id());
         foodEntity.updateName(request.name());
         return foodEntity.toModel();
     }
 
-    @Transactional
     public void delete(Long id) {
         foodRepository.deleteById(id);
     }
