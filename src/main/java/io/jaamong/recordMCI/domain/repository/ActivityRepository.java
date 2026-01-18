@@ -27,4 +27,8 @@ public class ActivityRepository {
         return activityJpaRepository.findById(id)
                 .orElseThrow(() -> new CustomRuntimeException(ErrorCode.NOT_FOUND_ACTIVITY));
     }
+
+    public void deleteById(Long id) {
+        activityJpaRepository.deleteById(id);
+    }
 }

@@ -81,4 +81,8 @@ public class ActivityService {
         activity.updateName(request.name());
         return activity.toModel();
     }
+
+    public void delete(Long id) {
+        activityRepository.deleteById(id);
+    }
 }

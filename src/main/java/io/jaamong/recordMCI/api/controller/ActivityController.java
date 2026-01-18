@@ -8,6 +8,7 @@ import io.jaamong.recordMCI.domain.application.ActivityService;
 import io.jaamong.recordMCI.domain.dto.Activity;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -65,5 +66,11 @@ public class ActivityController {
     public ApiResponse<Activity> add(@RequestBody @Valid ActivitySaveRequest request) {
         Activity activity = activityService.create(request.toServiceRequest());
         return ApiResponse.ok(activity);
+    }
+
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> delete(@PathVariable("id") Long id) {
+        activityService.delete(id);
+        return ApiResponse.of(HttpStatus.NO_CONTENT, null);
     }
 }
