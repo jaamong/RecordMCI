@@ -19,7 +19,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class ActivityService {
 
@@ -34,7 +34,6 @@ public class ActivityService {
      *
      * @return Activity 리스트
      */
-    @Transactional
     public List<ActivityEntity> initCreate(DailyRecordEntity dailyRecordEntity) {
         ActivityEntity walk = ActivityEntity.of(dailyRecordEntity, ActivityInitialType.WALK.getType());
         ActivityEntity bibleTranscribe = ActivityEntity.of(dailyRecordEntity, ActivityInitialType.BIBLE_TRANSCRIBE.getType());
@@ -50,7 +49,6 @@ public class ActivityService {
         return activities;
     }
 
-    @Transactional
     public Activity create(ActivitySaveServiceRequest request) {
         log.info("[ActivityService] create :: start : request={}", request);
 
@@ -62,14 +60,12 @@ public class ActivityService {
         return activity;
     }
 
-    @Transactional
     public Activity invertCompleted(Long id) {
         ActivityEntity activityEntity = activityRepository.findById(id);
         activityEntity.invertCompleted();
         return activityEntity.toModel();
     }
 
-    @Transactional
     public Activity updateWalkDetail(ActivityWalkUpdateServiceRequest request) {
         ActivityEntity activityEntity = activityRepository.findById(request.id());
         activityEntity.updateWalk(
@@ -80,7 +76,6 @@ public class ActivityService {
         return activityEntity.toModel();
     }
 
-    @Transactional
     public Activity updateName(ActivityNameUpdateServiceRequest request) {
         ActivityEntity activity = activityRepository.findById(request.id());
         activity.updateName(request.name());
